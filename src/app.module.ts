@@ -11,7 +11,7 @@ import { AuthGuard } from './common/guards/auth.gurad'
   imports: [
     UsersModule,
     AuthModule,
-    MongooseModule.forRoot('mongodb://mongodb:27017/Messenger'),
+    MongooseModule.forRoot('mongodb://localhost:27017/Messenger'),
   ],
   controllers: [AppController],
   providers: [
