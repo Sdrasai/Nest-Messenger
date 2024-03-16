@@ -1,17 +1,10 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Patch,
-  Param,
-  Delete,
-} from '@nestjs/common'
+import { Controller, Get, Post, Body, Param, Delete } from '@nestjs/common'
 import { UsersService } from './users.service'
 import { CreateUserDto } from './dto/create-user.dto'
 import { UpdateUserDto } from './dto/update-user.dto'
-import { Put } from '@nestjs/common/decorators'
+import { Put, Res } from '@nestjs/common/decorators'
 import { Public } from 'src/common/decorators/public.decorators'
+import { Response } from 'express'
 
 @Controller('users')
 export class UsersController {
@@ -39,7 +32,9 @@ export class UsersController {
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.usersService.remove(id)
+  remove(@Param('id') id: string, @Res() res: Response) {
+    return res
+      .json({ Message: 'User has been deleted succesfully' })
+      .send(this.usersService.remove(id))
   }
 }
