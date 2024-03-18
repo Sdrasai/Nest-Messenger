@@ -1,3 +1,5 @@
+export class Message {}
+
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose'
 
 @Schema()
@@ -16,9 +18,6 @@ export class User {
 
   @Prop()
   nickName: string
-
-  @Prop({ default: Date.now })
-  timestamp: Date
 }
 
 export const userSchema = SchemaFactory.createForClass(User)
