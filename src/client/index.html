@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>WebSocket Client</title>
+    <!-- Include Socket.IO client library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.3.1/socket.io.js"></script>
+  </head>
+  <body>
+    <h1>WebSocket Client</h1>
+
+    <script>
+      // Connect to the WebSocket server
+      const socket = io('ws://localhost:3000') // Replace 'ws://localhost:3000' with your server URL
+
+      // Event handler for successful connection
+      socket.on('connect', () => {
+        console.log('Connected to WebSocket server')
+
+        // Send a message to create a new message
+        socket.emit('createMessage', {
+          /* Your message data */
+        })
+
+        // Event handler for receiving a message from the server
+        socket.on('message', (message) => {
+          console.log('Received message from server:', message)
+          // Display the received message on the webpage
+          document.getElementById('messages').innerHTML += `<p>${message}</p>`
+        })
+
+        // Send a message to request all messages
+        socket.emit('findAllMessages')
+      })
+
+      // Event handler for handling errors
+      socket.on('error', (error) => {
+        console.error('WebSocket error:', error)
+      })
+
+      // Event handler for disconnection
+      socket.on('disconnect', () => {
+        console.log('Disconnected from WebSocket server')
+      })
+    </script>
+
+    <!-- Display area for received messages -->
+    <div id="messages"></div>
+  </body>
+</html>
