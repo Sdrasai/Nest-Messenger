@@ -6,9 +6,9 @@ import {
   ConnectedSocket,
 } from '@nestjs/websockets'
 import { MessagesService } from './messages.service'
-import { CreateMessageDto } from './dto/create-message.dto'
 
 import { Server, Socket } from 'socket.io'
+import { Logger } from '@nestjs/common'
 
 @WebSocketGateway({
   cors: {
@@ -19,28 +19,69 @@ export class MessagesGateway {
   @WebSocketServer()
   server: Server
 
+  private readonly logger = new Logger(MessagesGateway.name)
   constructor(private readonly messagesService: MessagesService) {}
 
-  @SubscribeMessage('createMessage')
-  async create(@MessageBody() createMessageDto: CreateMessageDto) {
-    const message = await this.messagesService.create(createMessageDto)
-    this.server.emit('message', message)
-    return message
+  afterInit() {
+    this.logger.log('Initialized')
   }
 
-  @SubscribeMessage('findAllMessages')
-  findAll() {
-    return this.messagesService.findAll()
+  handleConnection(client: any, ...args: any[]) {
+    const { sockets } = this.server.sockets
+
+    this.logger.log(`Client id: ${client.id} connected`)
+    this.logger.debug(`Number of connected clients: ${sockets.size}`)
+    console.log(sockets)
   }
 
-  // @SubscribeMessage('join')
-  // joinRoom(
-  //   @MessageBody('username') username: String,
-  //   @ConnectedSocket() client: Socket,
-  // ) {
-  //   return this.messagesService.identify(username, client.id)
+  handleDisconnect(client: any) {
+    this.logger.log(`Cliend id:${client.id} disconnected`)
+  }
+
+  handleEvent(socket) {
+    socket.on('chat message', (msg) => {
+      this.server.emit('chat message', msg)
+    })
+  }
+
+  @SubscribeMessage('chat message')
+  test(@MessageBody() msg: any) {
+    // console.log('++++++++++++++++++++++++++')
+    // console.log(this.server.sockets)
+    // console.log('++++++++++++++++++++++++++')
+    // console.log(typeof this.server)
+    // console.log('++++++++++++++++++++++++++')
+    // console.log('socket ++++++++++++++++++++++++', Socket)
+    // console.log('server +++++++++++++++++++++++', this.server)
+    console.log('msg +++++++++++++++++++++++++++', msg)
+  }
+
+  // @SubscribeMessage('test')
+  // test1(socket, next) {
+  //   console.log(socket.id)
   // }
 
-  @SubscribeMessage('typing')
-  async typing() {}
+  // @SubscribeMessage('createMessage')
+  // async createMessage(@MessageBody() createMessageDto: CreateMessageDto) {
+  //   const message =
+  //     await this.messagesService.createMessageService(createMessageDto)
+  //   this.server.emit('message', message)
+  //   return message
+  // }
+
+  // @SubscribeMessage('findAllMessages')
+  // findAll() {
+  //   return this.messagesService.findAllService()
+  // }
+
+  // // @SubscribeMessage('join')
+  // // joinRoom(
+  // //   @MessageBody('username') username: String,
+  // //   @ConnectedSocket() client: Socket,
+  // // ) {
+  // //   return this.messagesService.identify(username, client.id)
+  // // }
+
+  // @SubscribeMessage('typing')
+  // async typing() {}
 }

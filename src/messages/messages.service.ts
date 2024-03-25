@@ -12,11 +12,11 @@ export class MessagesService {
     @InjectModel(Message.name) private messageModel: Model<Message>,
   ) {}
 
-  create(createMessageDto: CreateMessageDto) {
+  createMessageService(createMessageDto: CreateMessageDto) {
     return this.messageModel.create(createMessageDto)
   }
 
-  findAll() {
+  findAllService() {
     return this.messageModel.find()
   }
 }
