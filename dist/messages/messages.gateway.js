@@ -24,24 +24,19 @@ let MessagesGateway = MessagesGateway_1 = class MessagesGateway {
         this.logger = new common_1.Logger(MessagesGateway_1.name);
     }
     afterInit() {
-        this.logger.log('Initialized');
+        this.logger.log("Initialized");
     }
     handleConnection(client, ...args) {
         const { sockets } = this.server.sockets;
         this.logger.log(`Client id: ${client.id} connected`);
         this.logger.debug(`Number of connected clients: ${sockets.size}`);
-        console.log(sockets);
     }
     handleDisconnect(client) {
         this.logger.log(`Cliend id:${client.id} disconnected`);
     }
-    handleEvent(socket) {
-        socket.on('chat message', (msg) => {
-            this.server.emit('chat message', msg);
-        });
-    }
     test(msg) {
-        console.log('msg +++++++++++++++++++++++++++', msg);
+        console.log("msg +++++++++++++++++++++++++++", msg);
+        this.server.emit("chat message", msg);
     }
 };
 exports.MessagesGateway = MessagesGateway;
@@ -50,7 +45,7 @@ __decorate([
     __metadata("design:type", socket_io_1.Server)
 ], MessagesGateway.prototype, "server", void 0);
 __decorate([
-    (0, websockets_1.SubscribeMessage)('chat message'),
+    (0, websockets_1.SubscribeMessage)("chat message"),
     __param(0, (0, websockets_1.MessageBody)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),
@@ -59,7 +54,7 @@ __decorate([
 exports.MessagesGateway = MessagesGateway = MessagesGateway_1 = __decorate([
     (0, websockets_1.WebSocketGateway)({
         cors: {
-            orogin: '*',
+            orogin: "*",
         },
     }),
     __metadata("design:paramtypes", [messages_service_1.MessagesService])

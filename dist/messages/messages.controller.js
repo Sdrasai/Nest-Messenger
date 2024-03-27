@@ -20,6 +20,7 @@ const common_1 = require("@nestjs/common");
 const path_1 = require("path");
 const create_user_dto_1 = require("../users/dto/create-user.dto");
 const public_decorators_1 = require("../common/decorators/public.decorators");
+const messenger_middleware_1 = require("../middlewares/messenger.middleware");
 let messageController = class messageController {
     constructor(messagesService, usersService, jwtService) {
         this.messagesService = messagesService;
@@ -27,13 +28,13 @@ let messageController = class messageController {
         this.jwtService = jwtService;
     }
     getRegisterForm(res, req) {
-        res.sendFile((0, path_1.join)('/app/src/client', 'register.html'));
+        res.sendFile((0, path_1.join)("/app/src/client", "register.html"));
     }
     registerInSocket(res, req, createUserDto) {
         try {
             this.usersService.create(createUserDto);
             return res.json({
-                msg: 'user has been created by socket inputs',
+                msg: "user has been created by socket inputs",
                 user: createUserDto.username,
             });
         }
@@ -42,7 +43,7 @@ let messageController = class messageController {
         }
     }
     getLoginForm(res, req) {
-        res.sendFile((0, path_1.join)('/app/src/client', 'login.html'));
+        res.sendFile((0, path_1.join)("/app/src/client", "login.html"));
     }
     async logInSocket(res, req, createUserDto) {
         try {
@@ -51,16 +52,27 @@ let messageController = class messageController {
                 throw new common_1.UnauthorizedException();
             }
             const payload = { username: user.username, sub: user.id };
-            console.log({ access_token: await this.jwtService.signAsync(payload) });
+            const access_token = await this.jwtService.signAsync(payload);
+            console.log("Tokennnnn", access_token);
+            return res
+                .cookie("access_token", access_token, {
+                httpOnly: true,
+                secure: process.env.NODE_ENV === "production",
+            })
+                .status(200)
+                .redirect("chat");
         }
         catch (error) {
             console.log(error);
         }
     }
+    getIndexChat(res, req) {
+        res.sendFile((0, path_1.join)("/app/src/client", "index.html"));
+    }
 };
 exports.messageController = messageController;
 __decorate([
-    (0, common_1.Get)('register'),
+    (0, common_1.Get)("register"),
     __param(0, (0, common_1.Res)()),
     __param(1, (0, common_1.Req)()),
     __metadata("design:type", Function),
@@ -68,7 +80,7 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], messageController.prototype, "getRegisterForm", null);
 __decorate([
-    (0, common_1.Post)('register'),
+    (0, common_1.Post)("register"),
     __param(0, (0, common_1.Res)()),
     __param(1, (0, common_1.Req)()),
     __param(2, (0, common_1.Body)()),
@@ -77,7 +89,7 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], messageController.prototype, "registerInSocket", null);
 __decorate([
-    (0, common_1.Get)('login'),
+    (0, common_1.Get)("login"),
     __param(0, (0, common_1.Res)()),
     __param(1, (0, common_1.Req)()),
     __metadata("design:type", Function),
@@ -85,7 +97,7 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], messageController.prototype, "getLoginForm", null);
 __decorate([
-    (0, common_1.Post)('login'),
+    (0, common_1.Post)("login"),
     __param(0, (0, common_1.Res)()),
     __param(1, (0, common_1.Req)()),
     __param(2, (0, common_1.Body)()),
@@ -93,9 +105,18 @@ __decorate([
     __metadata("design:paramtypes", [Object, Object, create_user_dto_1.CreateUserDto]),
     __metadata("design:returntype", Promise)
 ], messageController.prototype, "logInSocket", null);
+__decorate([
+    (0, common_1.UseGuards)(messenger_middleware_1.SocketAuthGuard),
+    (0, common_1.Get)("chat"),
+    __param(0, (0, common_1.Res)()),
+    __param(1, (0, common_1.Req)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, Object]),
+    __metadata("design:returntype", void 0)
+], messageController.prototype, "getIndexChat", null);
 exports.messageController = messageController = __decorate([
     (0, public_decorators_1.Public)(),
-    (0, common_1.Controller)('api/v1'),
+    (0, common_1.Controller)("api/v1"),
     __metadata("design:paramtypes", [messages_service_1.MessagesService,
         users_service_1.UsersService,
         jwt_1.JwtService])

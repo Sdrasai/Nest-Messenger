@@ -24,7 +24,7 @@ exports.AppModule = AppModule = __decorate([
         imports: [
             users_module_1.UsersModule,
             auth_module_1.AuthModule,
-            mongoose_1.MongooseModule.forRoot('mongodb://mongodb:27017/Messenger'),
+            mongoose_1.MongooseModule.forRoot("mongodb://mongodb:27017/Messenger"),
             messages_module_1.MessagesModule,
         ],
         controllers: [app_controller_1.AppController],
