@@ -5,6 +5,7 @@ import {
   Body,
   Controller,
   Get,
+  Next,
   Post,
   Req,
   Res,
@@ -12,11 +13,13 @@ import {
   UseGuards,
 } from "@nestjs/common";
 import { dirname, join } from "path";
-import { Response, Request } from "express";
+import { Response, Request, NextFunction } from "express";
 import { CreateUserDto } from "src/users/dto/create-user.dto";
 import { CreateMessageDto } from "./dto/create-message.dto";
 import { Public } from "src/common/decorators/public.decorators";
-import { SocketAuthGuard } from "src/middlewares/messenger.middleware";
+// import { SocketAuthGuardMiddleware } from "src/middlewares/messenger.middleware";
+// import { SocketAuthGuard } from "src/middlewares/messenger.middleware";
+// import { SocketAuthGuardMiddleware } from "../middlewares/messenger.middleware";
 
 @Public()
 @Controller("api/v1")
@@ -87,9 +90,20 @@ export class messageController {
     }
   }
 
-  @UseGuards(SocketAuthGuard)
+  // @UseGuards(SocketAuthGuard)
   @Get("chat")
-  getIndexChat(@Res() res: Response, @Req() req: Request) {
-    res.sendFile(join("/app/src/client", "index.html"));
+  getIndexChat(
+    @Res() res: Response,
+    @Req() req: Request,
+    @Next() next: NextFunction
+  ) {
+    try {
+      // if(client.headers.user)
+      res.sendFile(join("/app/src/client", "index.html"));
+    } catch (error) {
+      console.log("erroooooooooooor Injaaaaaaaa");
+      res.redirect("localhost:3000/api/v1/login");
+      // res.sendFile(join("/app/src/client", "login.html"));
+    }
   }
 }

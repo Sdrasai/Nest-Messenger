@@ -9,7 +9,7 @@ import { AuthGuard } from "./common/guards/auth.guard";
 
 import { MessagesModule } from "./messages/messages.module";
 import { MessagesGateway } from "./messages/messages.gateway";
-import { SocketAuthGuard } from "./middlewares/messenger.middleware";
+import { SocketAuthGuardMiddleware } from "./middlewares/messenger.middleware";
 
 @Module({
   imports: [
@@ -28,9 +28,9 @@ import { SocketAuthGuard } from "./middlewares/messenger.middleware";
     },
   ],
 })
-// export class AppModule implements NestModule {
-//   configure(consumer: MiddlewareConsumer) {
-//     consumer.apply(SocketAuthGuard).forRoutes("api/v1/chat");
-//   }
-// }
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(SocketAuthGuardMiddleware).forRoutes("api/v1/chat");
+  }
+}
+// export class AppModule {}

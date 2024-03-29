@@ -2,7 +2,7 @@
 import { MessagesService } from "./messages.service";
 import { UsersService } from "src/users/users.service";
 import { JwtService } from "@nestjs/jwt";
-import { Response, Request } from "express";
+import { Response, Request, NextFunction } from "express";
 import { CreateUserDto } from "src/users/dto/create-user.dto";
 export declare class messageController {
     private readonly messagesService;
@@ -13,5 +13,5 @@ export declare class messageController {
     registerInSocket(res: Response, req: Request, createUserDto: CreateUserDto): Response<any, Record<string, any>>;
     getLoginForm(res: Response, req: Request): void;
     logInSocket(res: Response, req: Request, createUserDto: CreateUserDto): Promise<void>;
-    getIndexChat(res: Response, req: Request): void;
+    getIndexChat(res: Response, req: Request, next: NextFunction): void;
 }

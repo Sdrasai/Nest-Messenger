@@ -20,7 +20,6 @@ const common_1 = require("@nestjs/common");
 const path_1 = require("path");
 const create_user_dto_1 = require("../users/dto/create-user.dto");
 const public_decorators_1 = require("../common/decorators/public.decorators");
-const messenger_middleware_1 = require("../middlewares/messenger.middleware");
 let messageController = class messageController {
     constructor(messagesService, usersService, jwtService) {
         this.messagesService = messagesService;
@@ -66,8 +65,14 @@ let messageController = class messageController {
             console.log(error);
         }
     }
-    getIndexChat(res, req) {
-        res.sendFile((0, path_1.join)("/app/src/client", "index.html"));
+    getIndexChat(res, req, next) {
+        try {
+            res.sendFile((0, path_1.join)("/app/src/client", "index.html"));
+        }
+        catch (error) {
+            console.log("erroooooooooooor Injaaaaaaaa");
+            res.redirect("localhost:3000/api/v1/login");
+        }
     }
 };
 exports.messageController = messageController;
@@ -106,12 +111,12 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], messageController.prototype, "logInSocket", null);
 __decorate([
-    (0, common_1.UseGuards)(messenger_middleware_1.SocketAuthGuard),
     (0, common_1.Get)("chat"),
     __param(0, (0, common_1.Res)()),
     __param(1, (0, common_1.Req)()),
+    __param(2, (0, common_1.Next)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object, Object]),
+    __metadata("design:paramtypes", [Object, Object, Function]),
     __metadata("design:returntype", void 0)
 ], messageController.prototype, "getIndexChat", null);
 exports.messageController = messageController = __decorate([

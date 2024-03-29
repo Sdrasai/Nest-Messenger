@@ -1,9 +1,9 @@
-import { CanActivate, ExecutionContext } from "@nestjs/common";
-import { Reflector } from "@nestjs/core";
+/// <reference types="cookie-parser" />
+import { NestMiddleware } from "@nestjs/common";
+import { Request, Response, NextFunction } from "express";
 import { JwtService } from "@nestjs/jwt";
-export declare class SocketAuthGuard implements CanActivate {
-    private reflector;
+export declare class SocketAuthGuardMiddleware implements NestMiddleware {
     private jwtService;
-    constructor(reflector: Reflector, jwtService: JwtService);
-    canActivate(context: ExecutionContext): Promise<boolean>;
+    constructor(jwtService: JwtService);
+    use(req: Request, res: Response, next: NextFunction): Promise<void>;
 }

@@ -16,7 +16,11 @@ const auth_module_1 = require("./auth/auth.module");
 const core_1 = require("@nestjs/core");
 const auth_guard_1 = require("./common/guards/auth.guard");
 const messages_module_1 = require("./messages/messages.module");
+const messenger_middleware_1 = require("./middlewares/messenger.middleware");
 let AppModule = class AppModule {
+    configure(consumer) {
+        consumer.apply(messenger_middleware_1.SocketAuthGuardMiddleware).forRoutes("api/v1/chat");
+    }
 };
 exports.AppModule = AppModule;
 exports.AppModule = AppModule = __decorate([
