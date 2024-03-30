@@ -18,9 +18,12 @@ const websockets_1 = require("@nestjs/websockets");
 const messages_service_1 = require("./messages.service");
 const socket_io_1 = require("socket.io");
 const common_1 = require("@nestjs/common");
+const jwt_1 = require("@nestjs/jwt");
+const auth_constants_1 = require("../common/constants/auth.constants");
 let MessagesGateway = MessagesGateway_1 = class MessagesGateway {
-    constructor(messagesService) {
+    constructor(messagesService, jwtService) {
         this.messagesService = messagesService;
+        this.jwtService = jwtService;
         this.logger = new common_1.Logger(MessagesGateway_1.name);
     }
     afterInit() {
@@ -34,10 +37,13 @@ let MessagesGateway = MessagesGateway_1 = class MessagesGateway {
     handleDisconnect(client) {
         this.logger.log(`Cliend id:${client.id} disconnected`);
     }
-    test(msg, req) {
-        console.log("+++++++++++++++++++++++++++++", req);
-        this.server.emit("connected-user", req.headers.user);
-        console.log("user: ", req.headers.user);
+    async test(msg, req, client) {
+        const extractedCookie = client.handshake.headers.cookie;
+        const accessToken = extractedCookie.split("=")[1];
+        const payload = await this.jwtService.verifyAsync(accessToken, {
+            secret: auth_constants_1.SECRET_KEY,
+        });
+        this.server.emit("connected-user", payload.username);
         console.log("msg +++++++++++++++++++++++++++", msg);
         this.server.emit("chat message", msg);
     }
@@ -51,9 +57,10 @@ __decorate([
     (0, websockets_1.SubscribeMessage)("chat message"),
     __param(0, (0, websockets_1.MessageBody)()),
     __param(1, (0, common_1.Req)()),
+    __param(2, (0, websockets_1.ConnectedSocket)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object, Object]),
-    __metadata("design:returntype", void 0)
+    __metadata("design:paramtypes", [Object, Object, socket_io_1.Socket]),
+    __metadata("design:returntype", Promise)
 ], MessagesGateway.prototype, "test", null);
 exports.MessagesGateway = MessagesGateway = MessagesGateway_1 = __decorate([
     (0, websockets_1.WebSocketGateway)({
@@ -61,6 +68,7 @@ exports.MessagesGateway = MessagesGateway = MessagesGateway_1 = __decorate([
             orogin: "*",
         },
     }),
-    __metadata("design:paramtypes", [messages_service_1.MessagesService])
+    __metadata("design:paramtypes", [messages_service_1.MessagesService,
+        jwt_1.JwtService])
 ], MessagesGateway);
 //# sourceMappingURL=messages.gateway.js.map

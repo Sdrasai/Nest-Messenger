@@ -97,6 +97,7 @@ export class messageController {
       return res.sendFile(join("/app/src/client", "index.html"));
     } catch (error) {
       console.log("Error", error);
+      // return res.redirect("http://localhost:3000/api/v1/login");
     }
   }
 }

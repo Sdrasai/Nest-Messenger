@@ -10,6 +10,8 @@ import { MessagesService } from "./messages.service";
 import { Server, Socket } from "socket.io";
 import { Logger, Req } from "@nestjs/common";
 import { Request } from "express";
+import { JwtService } from "@nestjs/jwt";
+import { SECRET_KEY } from "src/common/constants/auth.constants";
 
 @WebSocketGateway({
   cors: {
@@ -21,7 +23,10 @@ export class MessagesGateway {
   server: Server;
 
   private readonly logger = new Logger(MessagesGateway.name);
-  constructor(private readonly messagesService: MessagesService) {}
+  constructor(
+    private readonly messagesService: MessagesService,
+    private jwtService: JwtService
+  ) {}
 
   afterInit() {
     this.logger.log("Initialized");
@@ -39,11 +44,20 @@ export class MessagesGateway {
   }
 
   @SubscribeMessage("chat message")
-  test(@MessageBody() msg: any, @Req() req: Request) {
-    console.log("+++++++++++++++++++++++++++++", req);
+  async test(
+    @MessageBody() msg: any,
+    @Req() req: Request,
+    @ConnectedSocket() client: Socket
+  ) {
+    //TODO: use the middleware
+    const extractedCookie = client.handshake.headers.cookie;
+    const accessToken = extractedCookie.split("=")[1];
+    const payload = await this.jwtService.verifyAsync(accessToken, {
+      secret: SECRET_KEY,
+    });
 
-    this.server.emit("connected-user", req.headers.user);
-    console.log("user: ", req.headers.user);
+    this.server.emit("connected-user", payload.username);
+
     console.log("msg +++++++++++++++++++++++++++", msg);
     this.server.emit("chat message", msg);
   }
