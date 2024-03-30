@@ -87,7 +87,6 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.3.1/socket.io.js"></script>
 
     <script>
-      // const sayHelloSocket = io("/hello")
       const socket = io("ws://localhost:3000", {
         auth: {
           serverOffset: 0,
@@ -119,7 +118,6 @@
         nickName = username;
         console.log("+++++++++++++++++++++++", nickName);
       });
-
       // addEventListener('keydown', (e) => {
       //   if (e.key !== 'Enter' && input === document.activeElement) {
       //     typing = true

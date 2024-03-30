@@ -21,7 +21,7 @@ import { SECRET_KEY } from "src/common/constants/auth.constants";
 export class MessagesGateway {
   @WebSocketServer()
   server: Server;
-
+  // private userMap = new Map<string, any>();
   private readonly logger = new Logger(MessagesGateway.name);
   constructor(
     private readonly messagesService: MessagesService,
@@ -32,23 +32,12 @@ export class MessagesGateway {
     this.logger.log("Initialized");
   }
 
-  handleConnection(client: any, ...args: any[]) {
+  async handleConnection(client: any, ...args: any[]) {
     const { sockets } = this.server.sockets;
 
     this.logger.log(`Client id: ${client.id} connected`);
     this.logger.debug(`Number of connected clients: ${sockets.size}`);
-  }
 
-  handleDisconnect(client: any) {
-    this.logger.log(`Cliend id:${client.id} disconnected`);
-  }
-
-  @SubscribeMessage("chat message")
-  async test(
-    @MessageBody() msg: any,
-    @Req() req: Request,
-    @ConnectedSocket() client: Socket
-  ) {
     //TODO: use the middleware
     const extractedCookie = client.handshake.headers.cookie;
     const accessToken = extractedCookie.split("=")[1];
@@ -56,8 +45,21 @@ export class MessagesGateway {
       secret: SECRET_KEY,
     });
 
-    this.server.emit("connected-user", payload.username);
+    // this.userMap.set(client.id, payload);
+    // console.log("+++++++++++++++++++++++++", this.userMap.get(client.id));
+    // this.server.emit("connected-user", this.userMap.get(client.id).username);
 
+    sockets.get(client.id)["user"] = payload;
+    console.log("+++++++++++++++++++++++++", sockets.get(client.id)["user"]);
+    this.server.emit("connected-user", sockets.get(client.id)["user"].username);
+  }
+
+  handleDisconnect(client: any) {
+    this.logger.log(`Cliend id:${client.id} disconnected`);
+  }
+
+  @SubscribeMessage("chat message")
+  async test(@MessageBody() msg: any, @ConnectedSocket() client: Socket) {
     console.log("msg +++++++++++++++++++++++++++", msg);
     this.server.emit("chat message", msg);
   }

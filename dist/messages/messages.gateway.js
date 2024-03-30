@@ -29,21 +29,23 @@ let MessagesGateway = MessagesGateway_1 = class MessagesGateway {
     afterInit() {
         this.logger.log("Initialized");
     }
-    handleConnection(client, ...args) {
+    async handleConnection(client, ...args) {
         const { sockets } = this.server.sockets;
         this.logger.log(`Client id: ${client.id} connected`);
         this.logger.debug(`Number of connected clients: ${sockets.size}`);
-    }
-    handleDisconnect(client) {
-        this.logger.log(`Cliend id:${client.id} disconnected`);
-    }
-    async test(msg, req, client) {
         const extractedCookie = client.handshake.headers.cookie;
         const accessToken = extractedCookie.split("=")[1];
         const payload = await this.jwtService.verifyAsync(accessToken, {
             secret: auth_constants_1.SECRET_KEY,
         });
-        this.server.emit("connected-user", payload.username);
+        sockets.get(client.id)["user"] = payload;
+        console.log("+++++++++++++++++++++++++", sockets.get(client.id)["user"]);
+        this.server.emit("connected-user", sockets.get(client.id)["user"].username);
+    }
+    handleDisconnect(client) {
+        this.logger.log(`Cliend id:${client.id} disconnected`);
+    }
+    async test(msg, client) {
         console.log("msg +++++++++++++++++++++++++++", msg);
         this.server.emit("chat message", msg);
     }
@@ -56,10 +58,9 @@ __decorate([
 __decorate([
     (0, websockets_1.SubscribeMessage)("chat message"),
     __param(0, (0, websockets_1.MessageBody)()),
-    __param(1, (0, common_1.Req)()),
-    __param(2, (0, websockets_1.ConnectedSocket)()),
+    __param(1, (0, websockets_1.ConnectedSocket)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object, Object, socket_io_1.Socket]),
+    __metadata("design:paramtypes", [Object, socket_io_1.Socket]),
     __metadata("design:returntype", Promise)
 ], MessagesGateway.prototype, "test", null);
 exports.MessagesGateway = MessagesGateway = MessagesGateway_1 = __decorate([
