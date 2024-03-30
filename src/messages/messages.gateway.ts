@@ -8,7 +8,8 @@ import {
 import { MessagesService } from "./messages.service";
 
 import { Server, Socket } from "socket.io";
-import { Logger } from "@nestjs/common";
+import { Logger, Req } from "@nestjs/common";
+import { Request } from "express";
 
 @WebSocketGateway({
   cors: {
@@ -38,7 +39,11 @@ export class MessagesGateway {
   }
 
   @SubscribeMessage("chat message")
-  test(@MessageBody() msg: any) {
+  test(@MessageBody() msg: any, @Req() req: Request) {
+    console.log("+++++++++++++++++++++++++++++", req);
+
+    this.server.emit("connected-user", req.headers.user);
+    console.log("user: ", req.headers.user);
     console.log("msg +++++++++++++++++++++++++++", msg);
     this.server.emit("chat message", msg);
   }

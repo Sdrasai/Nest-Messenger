@@ -67,11 +67,10 @@ let messageController = class messageController {
     }
     getIndexChat(res, req, next) {
         try {
-            res.sendFile((0, path_1.join)("/app/src/client", "index.html"));
+            return res.sendFile((0, path_1.join)("/app/src/client", "index.html"));
         }
         catch (error) {
-            console.log("erroooooooooooor Injaaaaaaaa");
-            res.redirect("localhost:3000/api/v1/login");
+            console.log("Error", error);
         }
     }
 };

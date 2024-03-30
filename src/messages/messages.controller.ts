@@ -17,9 +17,6 @@ import { Response, Request, NextFunction } from "express";
 import { CreateUserDto } from "src/users/dto/create-user.dto";
 import { CreateMessageDto } from "./dto/create-message.dto";
 import { Public } from "src/common/decorators/public.decorators";
-// import { SocketAuthGuardMiddleware } from "src/middlewares/messenger.middleware";
-// import { SocketAuthGuard } from "src/middlewares/messenger.middleware";
-// import { SocketAuthGuardMiddleware } from "../middlewares/messenger.middleware";
 
 @Public()
 @Controller("api/v1")
@@ -90,7 +87,6 @@ export class messageController {
     }
   }
 
-  // @UseGuards(SocketAuthGuard)
   @Get("chat")
   getIndexChat(
     @Res() res: Response,
@@ -98,12 +94,9 @@ export class messageController {
     @Next() next: NextFunction
   ) {
     try {
-      // if(client.headers.user)
-      res.sendFile(join("/app/src/client", "index.html"));
+      return res.sendFile(join("/app/src/client", "index.html"));
     } catch (error) {
-      console.log("erroooooooooooor Injaaaaaaaa");
-      res.redirect("localhost:3000/api/v1/login");
-      // res.sendFile(join("/app/src/client", "login.html"));
+      console.log("Error", error);
     }
   }
 }

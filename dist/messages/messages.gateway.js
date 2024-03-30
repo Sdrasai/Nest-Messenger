@@ -34,7 +34,10 @@ let MessagesGateway = MessagesGateway_1 = class MessagesGateway {
     handleDisconnect(client) {
         this.logger.log(`Cliend id:${client.id} disconnected`);
     }
-    test(msg) {
+    test(msg, req) {
+        console.log("+++++++++++++++++++++++++++++", req);
+        this.server.emit("connected-user", req.headers.user);
+        console.log("user: ", req.headers.user);
         console.log("msg +++++++++++++++++++++++++++", msg);
         this.server.emit("chat message", msg);
     }
@@ -47,8 +50,9 @@ __decorate([
 __decorate([
     (0, websockets_1.SubscribeMessage)("chat message"),
     __param(0, (0, websockets_1.MessageBody)()),
+    __param(1, (0, common_1.Req)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object]),
+    __metadata("design:paramtypes", [Object, Object]),
     __metadata("design:returntype", void 0)
 ], MessagesGateway.prototype, "test", null);
 exports.MessagesGateway = MessagesGateway = MessagesGateway_1 = __decorate([

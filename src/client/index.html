@@ -98,11 +98,7 @@
         console.log("Connected to WebSocket server");
       });
 
-      socket.on("connect_error", (err) => {
-        window.location.replace("http://localhost:3000/auth/login");
-      });
-
-      // let nickName;
+      let nickName;
       let typing = false;
 
       const form = document.getElementById("form");
@@ -114,14 +110,14 @@
       form.addEventListener("submit", (e) => {
         e.preventDefault();
         if (input.value) {
-          socket.emit("chat message", ` ---> ${input.value}`);
+          socket.emit("chat message", `${nickName} ---> ${input.value}`);
           input.value = "";
         }
       });
 
-      // socket.on('connected-user', (username) => {
-      //   nickName = username
-      // })
+      socket.on("connected-user", (username) => {
+        nickName = username;
+      });
 
       // addEventListener('keydown', (e) => {
       //   if (e.key !== 'Enter' && input === document.activeElement) {
