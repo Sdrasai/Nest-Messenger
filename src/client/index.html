@@ -3,6 +3,7 @@
   <head>
     <meta name="viewport" content="width=device-width,initial-scale=1.0" />
     <title>Socket.IO chat</title>
+    <!-- <link rel="stylesheet" href="styles.css" /> -->
     <style>
       body {
         margin: 0;
@@ -118,30 +119,31 @@
         nickName = username;
         console.log("+++++++++++++++++++++++", nickName);
       });
-      // addEventListener('keydown', (e) => {
-      //   if (e.key !== 'Enter' && input === document.activeElement) {
-      //     typing = true
-      //   }
-      // })
 
-      // setInterval(() => {
-      //   if (typing) {
-      //     socket.emit('typing', nickName)
-      //     typing = false
-      //   } else {
-      //     socket.emit('stop typing', '')
-      //   }
-      // }, 1000)
+      addEventListener("keydown", (e) => {
+        if (e.key !== "Enter" && input === document.activeElement) {
+          typing = true;
+        }
+      });
 
-      // socket.on('typing', (msg) => {
-      //   pElement.textContent = `${msg} is typing`
-      //   pElement.style.display = 'block'
-      // })
+      setInterval(() => {
+        if (typing) {
+          socket.emit("typing", nickName);
+          typing = false;
+        } else {
+          socket.emit("stop typing", "");
+        }
+      }, 1000);
 
-      // socket.on('stop typing', () => {
-      //   pElement.textContent = ''
-      //   pElement.style.display = 'none'
-      // })
+      socket.on("typing", (msg) => {
+        pElement.textContent = `${msg} is typing`;
+        pElement.style.display = "block";
+      });
+
+      socket.on("stop typing", () => {
+        pElement.textContent = "";
+        pElement.style.display = "none";
+      });
 
       socket.on("chat message", (msg) => {
         const item = document.createElement("li");

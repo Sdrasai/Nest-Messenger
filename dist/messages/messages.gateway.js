@@ -19,7 +19,6 @@ const messages_service_1 = require("./messages.service");
 const socket_io_1 = require("socket.io");
 const common_1 = require("@nestjs/common");
 const jwt_1 = require("@nestjs/jwt");
-const auth_constants_1 = require("../common/constants/auth.constants");
 let MessagesGateway = MessagesGateway_1 = class MessagesGateway {
     constructor(messagesService, jwtService) {
         this.messagesService = messagesService;
@@ -34,20 +33,20 @@ let MessagesGateway = MessagesGateway_1 = class MessagesGateway {
         this.logger.log(`Client id: ${client.id} connected`);
         this.logger.debug(`Number of connected clients: ${sockets.size}`);
         const extractedCookie = client.handshake.headers.cookie;
-        const accessToken = extractedCookie.split("=")[1];
-        const payload = await this.jwtService.verifyAsync(accessToken, {
-            secret: auth_constants_1.SECRET_KEY,
-        });
-        sockets.get(client.id)["user"] = payload;
-        console.log("+++++++++++++++++++++++++", sockets.get(client.id)["user"]);
-        this.server.emit("connected-user", sockets.get(client.id)["user"].username);
+        const nickName = extractedCookie.split(";")[1].split("=")[1];
+        client.emit("connected-user", nickName);
     }
     handleDisconnect(client) {
         this.logger.log(`Cliend id:${client.id} disconnected`);
     }
-    async test(msg, client) {
-        console.log("msg +++++++++++++++++++++++++++", msg);
+    async message(msg, client) {
         this.server.emit("chat message", msg);
+    }
+    istyping(msg, client) {
+        client.broadcast.emit("typing", msg);
+    }
+    isNotTyping(msg, client) {
+        client.broadcast.emit("stop typing", "");
     }
 };
 exports.MessagesGateway = MessagesGateway;
@@ -62,7 +61,23 @@ __decorate([
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object, socket_io_1.Socket]),
     __metadata("design:returntype", Promise)
-], MessagesGateway.prototype, "test", null);
+], MessagesGateway.prototype, "message", null);
+__decorate([
+    (0, websockets_1.SubscribeMessage)("typing"),
+    __param(0, (0, websockets_1.MessageBody)()),
+    __param(1, (0, websockets_1.ConnectedSocket)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, socket_io_1.Socket]),
+    __metadata("design:returntype", void 0)
+], MessagesGateway.prototype, "istyping", null);
+__decorate([
+    (0, websockets_1.SubscribeMessage)("stop typing"),
+    __param(0, (0, websockets_1.MessageBody)()),
+    __param(1, (0, websockets_1.ConnectedSocket)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, socket_io_1.Socket]),
+    __metadata("design:returntype", void 0)
+], MessagesGateway.prototype, "isNotTyping", null);
 exports.MessagesGateway = MessagesGateway = MessagesGateway_1 = __decorate([
     (0, websockets_1.WebSocketGateway)({
         cors: {

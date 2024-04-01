@@ -18,7 +18,7 @@ export class SocketAuthGuardMiddleware implements NestMiddleware {
         return res.redirect("http://localhost:3000/api/v1/login");
       }
 
-      const accessToken = extractedCookie.split("=")[1];
+      const accessToken = extractedCookie.split(";")[0].split("=")[1];
 
       if (!accessToken) {
         // throw new Error("Access token not found");
@@ -30,7 +30,12 @@ export class SocketAuthGuardMiddleware implements NestMiddleware {
         secret: SECRET_KEY,
       });
 
-      req.headers.user = payload;
+      res.cookie("userName", payload.username, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+      });
+
+      // req.headers.user = payload;
       // console.log("User payload:", req.headers.user);
 
       next();

@@ -10,5 +10,7 @@ export declare class MessagesGateway {
     afterInit(): void;
     handleConnection(client: any, ...args: any[]): Promise<void>;
     handleDisconnect(client: any): void;
-    test(msg: any, client: Socket): Promise<void>;
+    message(msg: any, client: Socket): Promise<void>;
+    istyping(msg: any, client: Socket): void;
+    isNotTyping(msg: any, client: Socket): void;
 }

@@ -24,7 +24,7 @@ let SocketAuthGuardMiddleware = class SocketAuthGuardMiddleware {
                 console.log("No cookies found in the handshake headers");
                 return res.redirect("http://localhost:3000/api/v1/login");
             }
-            const accessToken = extractedCookie.split("=")[1];
+            const accessToken = extractedCookie.split(";")[0].split("=")[1];
             if (!accessToken) {
                 console.log("Access token not found");
                 return res.redirect("http://localhost:3000/api/v1/login");
@@ -32,7 +32,10 @@ let SocketAuthGuardMiddleware = class SocketAuthGuardMiddleware {
             const payload = await this.jwtService.verifyAsync(accessToken, {
                 secret: auth_constants_1.SECRET_KEY,
             });
-            req.headers.user = payload;
+            res.cookie("userName", payload.username, {
+                httpOnly: true,
+                secure: process.env.NODE_ENV === "production",
+            });
             next();
         }
         catch (error) {
