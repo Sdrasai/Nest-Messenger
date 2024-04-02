@@ -3,11 +3,12 @@
   <head>
     <meta name="viewport" content="width=device-width,initial-scale=1.0" />
     <title>Socket.IO chat</title>
+    <!-- <link rel="stylesheet" href="styles.css" /> -->
     <style>
       body {
         margin: 0;
         padding-bottom: 3rem;
-        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
           Helvetica, Arial, sans-serif;
       }
 
@@ -87,74 +88,70 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.3.1/socket.io.js"></script>
 
     <script>
-      // const sayHelloSocket = io("/hello")
-      const socket = io('ws://localhost:3000', {
+      const socket = io("ws://localhost:3000", {
         auth: {
           serverOffset: 0,
         },
-      })
+      });
 
-      socket.on('connect', () => {
-        console.log('Connected to WebSocket server')
-      })
+      socket.on("connect", () => {
+        console.log("Connected to WebSocket server");
+      });
 
-      socket.on('connect_error', (err) => {
-        window.location.replace('http://localhost:3000/auth/login')
-      })
+      let nickName;
+      let typing = false;
 
-      // let nickName;
-      let typing = false
+      const form = document.getElementById("form");
+      const input = document.getElementById("input");
+      const ul = document.getElementById("messages");
+      const divChat = document.getElementById("chat");
+      const pElement = document.getElementById("is-typing-notify");
 
-      const form = document.getElementById('form')
-      const input = document.getElementById('input')
-      const ul = document.getElementById('messages')
-      const divChat = document.getElementById('chat')
-      const pElement = document.getElementById('is-typing-notify')
-
-      form.addEventListener('submit', (e) => {
-        e.preventDefault()
+      form.addEventListener("submit", (e) => {
+        e.preventDefault();
         if (input.value) {
-          socket.emit('chat message', ` ---> ${input.value}`)
-          input.value = ''
+          socket.emit("chat message", `${nickName} ---> ${input.value}`);
+          input.value = "";
         }
-      })
+      });
 
-      // socket.on('connected-user', (username) => {
-      //   nickName = username
-      // })
+      socket.on("connected-user", (username) => {
+        nickName = username;
+        console.log("+++++++++++++++++++++++", nickName);
+      });
 
-      // addEventListener('keydown', (e) => {
-      //   if (e.key !== 'Enter' && input === document.activeElement) {
-      //     typing = true
-      //   }
-      // })
+      addEventListener("keydown", (e) => {
+        if (e.key !== "Enter" && input === document.activeElement) {
+          typing = true;
+        }
+      });
 
-      // setInterval(() => {
-      //   if (typing) {
-      //     socket.emit('typing', nickName)
-      //     typing = false
-      //   } else {
-      //     socket.emit('stop typing', '')
-      //   }
-      // }, 1000)
+      setInterval(() => {
+        if (typing) {
+          socket.emit("typing", nickName);
+          typing = false;
+        } else {
+          socket.emit("stop typing", "");
+        }
+      }, 1000);
 
-      // socket.on('typing', (msg) => {
-      //   pElement.textContent = `${msg} is typing`
-      //   pElement.style.display = 'block'
-      // })
+      socket.on("typing", (msg) => {
+        pElement.textContent = `${msg} is typing`;
+        pElement.style.display = "block";
+      });
 
-      // socket.on('stop typing', () => {
-      //   pElement.textContent = ''
-      //   pElement.style.display = 'none'
-      // })
+      socket.on("stop typing", () => {
+        pElement.textContent = "";
+        pElement.style.display = "none";
+      });
 
-      socket.on('chat message', (msg) => {
-        const item = document.createElement('li')
-        item.textContent = msg
-        messages.appendChild(item)
-        window.scrollTo(0, document.body.scrollHeight)
+      socket.on("chat message", (msg) => {
+        const item = document.createElement("li");
+        item.textContent = msg;
+        messages.appendChild(item);
+        window.scrollTo(0, document.body.scrollHeight);
         // socket.emit('test', 'Shalgham')
-      })
+      });
 
       // socket.on('chat message', (msg, serverOffset) => {
       //   const item = document.createElement('li')
@@ -168,9 +165,9 @@
       //   console.log('salam', data)
       // })
 
-      socket.on('disconnect', () => {
-        console.log('Disconnected from WebSocket server')
-      })
+      socket.on("disconnect", () => {
+        console.log("Disconnected from WebSocket server");
+      });
     </script>
   </body>
 </html>
