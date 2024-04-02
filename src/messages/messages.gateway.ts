@@ -66,6 +66,25 @@ export class MessagesGateway {
     this.server.emit("chat message", msg);
   }
 
+  // socket.on("chat message", async (msg, clientOffset) => {
+  //   let result;
+  //   try {
+  //     result = await db.run(
+  //       "INSERT INTO messages (content, client_offset) VALUES (?, ?)",
+  //       msg,
+  //       clientOffset
+  //     );
+  //   } catch (e) {
+  //     if (e.errno === 19 /* SQLITE_CONSTRAINT */) {
+  //       callback();
+  //     } else {
+  //       // nothing to do, just let the client retry
+  //     }
+  //     return;
+  //   }
+  //   io.emit("chat message", msg, result.lastID);
+  // });
+
   @SubscribeMessage("typing")
   istyping(@MessageBody() msg: any, @ConnectedSocket() client: Socket) {
     client.broadcast.emit("typing", msg);

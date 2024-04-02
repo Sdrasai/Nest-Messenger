@@ -17,6 +17,7 @@ import { Response, Request, NextFunction } from "express";
 import { CreateUserDto } from "src/users/dto/create-user.dto";
 import { CreateMessageDto } from "./dto/create-message.dto";
 import { Public } from "src/common/decorators/public.decorators";
+import * as path from "path";
 
 @Public()
 @Controller("api/v1")
@@ -30,7 +31,9 @@ export class messageController {
   @Get("register")
   getRegisterForm(@Res() res: Response, @Req() req: Request) {
     // res.sendFile(join(__dirname, 'register.html'))
-    res.sendFile(join("/app/src/client", "register.html"));
+    // res.sendFile(join("/app/src/client", "register.html"));
+    const filePath = path.resolve(__dirname, "../../src/client/register.html");
+    res.sendFile(filePath);
   }
 
   @Post("register")
@@ -53,7 +56,9 @@ export class messageController {
   @Get("login")
   getLoginForm(@Res() res: Response, @Req() req: Request) {
     // res.sendFile(join(__dirname, 'login.html'))
-    res.sendFile(join("/app/src/client", "login.html"));
+    // res.sendFile(join("/app/src/client", "login.html"));
+    const filePath = path.resolve(__dirname, "../../src/client/login.html");
+    res.sendFile(filePath);
   }
 
   @Post("login")
@@ -94,7 +99,9 @@ export class messageController {
     @Next() next: NextFunction
   ) {
     try {
-      return res.sendFile(join("/app/src/client", "index.html"));
+      // return res.sendFile(join("/app/src/client", "index.html"));
+      const filePath = path.resolve(__dirname, "../../src/client/index.html");
+      res.sendFile(filePath);
     } catch (error) {
       console.log("Error", error);
       // return res.redirect("http://localhost:3000/api/v1/login");

@@ -17,9 +17,9 @@ const messages_service_1 = require("./messages.service");
 const users_service_1 = require("../users/users.service");
 const jwt_1 = require("@nestjs/jwt");
 const common_1 = require("@nestjs/common");
-const path_1 = require("path");
 const create_user_dto_1 = require("../users/dto/create-user.dto");
 const public_decorators_1 = require("../common/decorators/public.decorators");
+const path = require("path");
 let messageController = class messageController {
     constructor(messagesService, usersService, jwtService) {
         this.messagesService = messagesService;
@@ -27,7 +27,8 @@ let messageController = class messageController {
         this.jwtService = jwtService;
     }
     getRegisterForm(res, req) {
-        res.sendFile((0, path_1.join)("/app/src/client", "register.html"));
+        const filePath = path.resolve(__dirname, "../../src/client/register.html");
+        res.sendFile(filePath);
     }
     registerInSocket(res, req, createUserDto) {
         try {
@@ -42,7 +43,8 @@ let messageController = class messageController {
         }
     }
     getLoginForm(res, req) {
-        res.sendFile((0, path_1.join)("/app/src/client", "login.html"));
+        const filePath = path.resolve(__dirname, "../../src/client/login.html");
+        res.sendFile(filePath);
     }
     async logInSocket(res, req, createUserDto) {
         try {
@@ -67,7 +69,8 @@ let messageController = class messageController {
     }
     getIndexChat(res, req, next) {
         try {
-            return res.sendFile((0, path_1.join)("/app/src/client", "index.html"));
+            const filePath = path.resolve(__dirname, "../../src/client/index.html");
+            res.sendFile(filePath);
         }
         catch (error) {
             console.log("Error", error);

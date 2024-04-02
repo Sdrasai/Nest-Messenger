@@ -22,11 +22,13 @@
 /// <reference types="mongoose/types/validation" />
 /// <reference types="mongoose/types/virtuals" />
 /// <reference types="mongoose/types/inferschematype" />
-import { Types } from 'mongoose';
-import { User } from 'src/users/schema/user.schema';
+import { Types } from "mongoose";
+import { User } from "src/users/schema/user.schema";
 export declare class Message {
     user: User;
     text: string;
+    client_offset: number;
+    id: number;
 }
 export declare const messageSchema: import("mongoose").Schema<Message, import("mongoose").Model<Message, any, any, any, import("mongoose").Document<unknown, any, Message> & Message & {
     _id: Types.ObjectId;

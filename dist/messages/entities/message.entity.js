@@ -17,12 +17,20 @@ class Message {
 }
 exports.Message = Message;
 __decorate([
-    (0, mongoose_1.Prop)({ type: mongoose_2.Types.ObjectId, ref: 'User' }),
+    (0, mongoose_1.Prop)({ type: mongoose_2.Types.ObjectId, ref: "User" }),
     __metadata("design:type", user_schema_1.User)
 ], Message.prototype, "user", void 0);
 __decorate([
     (0, mongoose_1.Prop)(),
     __metadata("design:type", String)
 ], Message.prototype, "text", void 0);
+__decorate([
+    (0, mongoose_1.Prop)(),
+    __metadata("design:type", Number)
+], Message.prototype, "client_offset", void 0);
+__decorate([
+    (0, mongoose_1.Prop)(),
+    __metadata("design:type", Number)
+], Message.prototype, "id", void 0);
 exports.messageSchema = mongoose_1.SchemaFactory.createForClass(Message);
 //# sourceMappingURL=message.entity.js.map

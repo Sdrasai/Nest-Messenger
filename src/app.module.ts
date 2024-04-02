@@ -1,5 +1,5 @@
 import { MiddlewareConsumer, Module, NestModule } from "@nestjs/common";
-import { MongooseModule } from "@nestjs/mongoose";
+import { getConnectionToken, MongooseModule } from "@nestjs/mongoose";
 import { AppController } from "./app.controller";
 import { AppService } from "./app.service";
 import { UsersModule } from "./users/users.module";
@@ -8,14 +8,28 @@ import { APP_GUARD } from "@nestjs/core";
 import { AuthGuard } from "./common/guards/auth.guard";
 
 import { MessagesModule } from "./messages/messages.module";
-import { MessagesGateway } from "./messages/messages.gateway";
 import { SocketAuthGuardMiddleware } from "./middlewares/messenger.middleware";
+// import { Message, messageSchema } from "./messages/entities/message.entity";
+// import { Connection } from "mongoose";
+// import * as AutoIncrementFactory from "mongoose-sequence";
 
 @Module({
   imports: [
     UsersModule,
     AuthModule,
     MongooseModule.forRoot("mongodb://mongodb:27017/Messenger"),
+    // MongooseModule.forFeatureAsync([
+    //   {
+    //     name: Message.name,
+    //     useFactory: async (connection: Connection) => {
+    //       const schema = messageSchema;
+    //       const AutoIncrement = AutoIncrementFactory(connection);
+    //       schema.plugin(AutoIncrement, { inc_field: "id" });
+    //       return schema;
+    //     },
+    //     inject: [getConnectionToken("mongodb://mongodb:27017/Messenger")],
+    //   },
+    // ]),
     MessagesModule,
   ],
   controllers: [AppController],
