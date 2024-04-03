@@ -40,7 +40,7 @@ export class MessagesGateway {
     this.logger.debug(`Number of connected clients: ${sockets.size}`);
 
     const extractedCookie = client.handshake.headers.cookie;
-    const nickName = extractedCookie.split(";")[1].split("=")[1];
+    const nickName = extractedCookie?.split(";")[1]?.split("=")[1];
     client.emit("connected-user", nickName);
   }
 

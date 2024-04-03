@@ -41,12 +41,17 @@ export class messageController {
   ) {
     try {
       this.usersService.create(createUserDto);
-      return res.json({
-        msg: "user has been created by socket inputs",
-        user: createUserDto.username,
-      });
+
+      // Send success message and redirect to chat page
+      res.send(`
+        <script>
+          alert("You're registered successfully!");
+          window.location.href = 'http://localhost:3000/api/v1/login';
+        </script>
+      `);
     } catch (error) {
       console.log(error);
+      // Handle error if necessary
     }
   }
 
@@ -97,7 +102,6 @@ export class messageController {
       res.sendFile(filePath);
     } catch (error) {
       console.log("Error", error);
-      // return res.redirect("http://localhost:3000/api/v1/login");
     }
   }
 }

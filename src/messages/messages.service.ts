@@ -3,7 +3,7 @@ import { CreateMessageDto } from "./dto/create-message.dto";
 
 import { SubscribeMessage } from "@nestjs/websockets";
 import { InjectModel } from "@nestjs/mongoose";
-import { Message } from "./entities/message.entity";
+import { Message } from "./schema/message.schema";
 import { Model } from "mongoose";
 
 @Injectable()
