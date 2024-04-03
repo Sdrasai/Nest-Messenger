@@ -50,8 +50,8 @@ export class MessagesGateway {
 
   @SubscribeMessage("chat message")
   async message(@MessageBody() msg: any, @ConnectedSocket() client: Socket) {
-    let message = msg.split("--->")[1];
-    let username = msg.split("--->")[0];
+    let message = msg.split(":")[1];
+    let username = msg.split(": ")[0];
     const user = await this.userService.findByUsername(username);
     await this.messagesService.createMessageService(user, message);
 
