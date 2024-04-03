@@ -1,4 +1,4 @@
-version: '3.5'
+version: "3.5"
 
 services:
   mongodb:
@@ -10,19 +10,19 @@ services:
     volumes:
       - mongodb_data_container_messenger:/data/db
 
-  app:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    container_name: nest-docker-app-messenger
-    environment:
-      - PORT=${PORT}
-    ports:
-      - '3000:3000'
-    depends_on:
-      - mongodb
-    volumes:
-      - ./:/app
+  # app:
+  #   build:
+  #     context: .
+  #     dockerfile: Dockerfile
+  #   container_name: nest-docker-app-messenger
+  #   environment:
+  #     - PORT=${PORT}
+  #   ports:
+  #     - '3000:3000'
+  #   depends_on:
+  #     - mongodb
+  #   volumes:
+  #     - ./:/app
 
 volumes:
   mongodb_data_container_messenger:

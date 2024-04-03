@@ -8,10 +8,11 @@ import {
 import { MessagesService } from "./messages.service";
 
 import { Server, Socket } from "socket.io";
-import { Logger, Req } from "@nestjs/common";
-import { Request } from "express";
+import { Logger } from "@nestjs/common";
+
 import { JwtService } from "@nestjs/jwt";
-import { SECRET_KEY } from "src/common/constants/auth.constants";
+
+import { UsersService } from "src/users/users.service";
 
 @WebSocketGateway({
   cors: {
@@ -24,6 +25,7 @@ export class MessagesGateway {
   private readonly logger = new Logger(MessagesGateway.name);
   constructor(
     private readonly messagesService: MessagesService,
+    private readonly userService: UsersService,
     private jwtService: JwtService
   ) {}
 
@@ -34,23 +36,8 @@ export class MessagesGateway {
   async handleConnection(client: any, ...args: any[]) {
     const { sockets } = this.server.sockets;
 
-    this.logger.log(`Client id: ${client.id} connected`);
+    this.logger.log(`client id: ${client.id} connected`);
     this.logger.debug(`Number of connected clients: ${sockets.size}`);
-
-    // //use the middleware
-    // const extractedCookie = client.handshake.headers.cookie;
-    // const accessToken = extractedCookie.split("=")[1];
-    // const payload = await this.jwtService.verifyAsync(accessToken, {
-    //   secret: SECRET_KEY,
-    // });
-
-    // // this.userMap.set(client.id, payload);
-    // // console.log("+++++++++++++++++++++++++", this.userMap.get(client.id));
-    // // this.server.emit("connected-user", this.userMap.get(client.id).username);
-
-    // sockets.get(client.id)["user"] = payload;
-    // console.log("+++++++++++++++++++++++++", sockets.get(client.id)["user"]);
-    // client.emit("connected-user", sockets.get(client.id)["user"].username);
 
     const extractedCookie = client.handshake.headers.cookie;
     const nickName = extractedCookie.split(";")[1].split("=")[1];
@@ -63,27 +50,17 @@ export class MessagesGateway {
 
   @SubscribeMessage("chat message")
   async message(@MessageBody() msg: any, @ConnectedSocket() client: Socket) {
+    let message = msg.split("--->")[1];
+    let username = msg.split("--->")[0];
+    const user = await this.userService.findByUsername(username);
+    const createdMessage = await this.messagesService.createMessageService(
+      user,
+      message
+    );
+    console.log(createdMessage);
+
     this.server.emit("chat message", msg);
   }
-
-  // socket.on("chat message", async (msg, clientOffset) => {
-  //   let result;
-  //   try {
-  //     result = await db.run(
-  //       "INSERT INTO messages (content, client_offset) VALUES (?, ?)",
-  //       msg,
-  //       clientOffset
-  //     );
-  //   } catch (e) {
-  //     if (e.errno === 19 /* SQLITE_CONSTRAINT */) {
-  //       callback();
-  //     } else {
-  //       // nothing to do, just let the client retry
-  //     }
-  //     return;
-  //   }
-  //   io.emit("chat message", msg, result.lastID);
-  // });
 
   @SubscribeMessage("typing")
   istyping(@MessageBody() msg: any, @ConnectedSocket() client: Socket) {
@@ -95,29 +72,3 @@ export class MessagesGateway {
     client.broadcast.emit("stop typing", "");
   }
 }
-
-// @SubscribeMessage('test')
-// test1(socket, next) {
-//   console.log(socket.id)
-// }
-
-// @SubscribeMessage('createMessage')
-// async createMessage(@MessageBody() createMessageDto: CreateMessageDto) {
-//   const message =
-//     await this.messagesService.createMessageService(createMessageDto)
-//   this.server.emit('message', message)
-//   return message
-// }
-
-// @SubscribeMessage('findAllMessages')
-// findAll() {
-//   return this.messagesService.findAllService()
-// }
-
-// // @SubscribeMessage('join')
-// // joinRoom(
-// //   @MessageBody('username') username: String,
-// //   @ConnectedSocket() client: Socket,
-// // ) {
-// //   return this.messagesService.identify(username, client.id)
-// // }

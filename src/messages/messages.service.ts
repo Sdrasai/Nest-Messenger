@@ -12,8 +12,8 @@ export class MessagesService {
     @InjectModel(Message.name) private messageModel: Model<Message>,
   ) {}
 
-  createMessageService(createMessageDto: CreateMessageDto) {
-    return this.messageModel.create(createMessageDto)
+  createMessageService(user: any, message: string) {
+    return this.messageModel.create(user, message);
   }
 
   findAllService() {
