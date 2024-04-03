@@ -22,15 +22,12 @@
 /// <reference types="mongoose/types/validation" />
 /// <reference types="mongoose/types/virtuals" />
 /// <reference types="mongoose/types/inferschematype" />
-import { CreateMessageDto } from './dto/create-message.dto';
-import { Message } from './entities/message.entity';
-import { Model } from 'mongoose';
+import { Message } from "./schema/message.schema";
+import { Model } from "mongoose";
 export declare class MessagesService {
     private messageModel;
     constructor(messageModel: Model<Message>);
-    createMessageService(createMessageDto: CreateMessageDto): Promise<import("mongoose").Document<unknown, {}, Message> & Message & {
-        _id: import("mongoose").Types.ObjectId;
-    }>;
+    createMessageService(user: any, message: string): Promise<Message>;
     findAllService(): import("mongoose").Query<(import("mongoose").Document<unknown, {}, Message> & Message & {
         _id: import("mongoose").Types.ObjectId;
     })[], import("mongoose").Document<unknown, {}, Message> & Message & {

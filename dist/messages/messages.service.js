@@ -15,14 +15,17 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.MessagesService = void 0;
 const common_1 = require("@nestjs/common");
 const mongoose_1 = require("@nestjs/mongoose");
-const message_entity_1 = require("./entities/message.entity");
+const message_schema_1 = require("./schema/message.schema");
 const mongoose_2 = require("mongoose");
 let MessagesService = class MessagesService {
     constructor(messageModel) {
         this.messageModel = messageModel;
     }
-    createMessageService(createMessageDto) {
-        return this.messageModel.create(createMessageDto);
+    async createMessageService(user, message) {
+        return await this.messageModel.create({
+            user,
+            message,
+        });
     }
     findAllService() {
         return this.messageModel.find();
@@ -31,7 +34,7 @@ let MessagesService = class MessagesService {
 exports.MessagesService = MessagesService;
 exports.MessagesService = MessagesService = __decorate([
     (0, common_1.Injectable)(),
-    __param(0, (0, mongoose_1.InjectModel)(message_entity_1.Message.name)),
+    __param(0, (0, mongoose_1.InjectModel)(message_schema_1.Message.name)),
     __metadata("design:paramtypes", [mongoose_2.Model])
 ], MessagesService);
 //# sourceMappingURL=messages.service.js.map

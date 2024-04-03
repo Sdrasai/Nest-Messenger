@@ -6,6 +6,7 @@ import {
   Controller,
   Get,
   Next,
+  Param,
   Post,
   Req,
   Res,
@@ -51,6 +52,7 @@ export class messageController {
       `);
     } catch (error) {
       console.log(error);
+      // Handle error if necessary
     }
   }
 
@@ -91,6 +93,37 @@ export class messageController {
 
   @Get("chat")
   getIndexChat(
+    @Res() res: Response,
+    @Req() req: Request,
+    @Next() next: NextFunction
+  ) {
+    try {
+      // return res.sendFile(join("/app/src/client", "index.html"));
+      const filePath = path.resolve(__dirname, "../../src/client/index.html");
+      res.sendFile(filePath);
+    } catch (error) {
+      console.log("Error", error);
+    }
+  }
+
+  @Get("home")
+  homePage(
+    @Res() res: Response,
+    @Req() req: Request,
+    @Next() next: NextFunction
+  ) {
+    try {
+      // return res.sendFile(join("/app/src/client", "index.html"));
+      const filePath = path.resolve(__dirname, "../../src/client/home.html");
+      res.sendFile(filePath);
+    } catch (error) {
+      console.log("Error", error);
+    }
+  }
+
+  @Get("chat/:roomId")
+  roomPage(
+    @Param("roomId") roomId: any,
     @Res() res: Response,
     @Req() req: Request,
     @Next() next: NextFunction

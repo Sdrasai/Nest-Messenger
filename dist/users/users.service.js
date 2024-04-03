@@ -41,6 +41,17 @@ let UsersService = class UsersService {
     async findByUsername(username) {
         return await this.userModel.findOne({ username });
     }
+    async createChatRoom(roomId, usernames) {
+        if (Array.isArray(usernames)) {
+            usernames.forEach(async (user) => {
+                await this.userModel.findOneAndUpdate({ username: user }, { $push: { userRooms: roomId } }, { new: true });
+            });
+        }
+        else {
+            await this.userModel.findOneAndUpdate({ username: usernames }, { $push: { userRooms: roomId } }, { new: true });
+        }
+        return roomId;
+    }
 };
 exports.UsersService = UsersService;
 exports.UsersService = UsersService = __decorate([
