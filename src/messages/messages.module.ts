@@ -1,7 +1,11 @@
 import { Module } from "@nestjs/common";
 import { MessagesService } from "./messages.service";
 import { MessagesGateway } from "./messages.gateway";
+<<<<<<< HEAD
 import { Message, messageSchema } from "./schema/message.schema";
+=======
+import { Message, messageSchema } from "./entities/message.entity";
+>>>>>>> main
 import { MongooseModule } from "@nestjs/mongoose";
 import { UsersService } from "src/users/users.service";
 import { JwtModule } from "@nestjs/jwt";
