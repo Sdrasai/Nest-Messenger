@@ -110,7 +110,7 @@
       form.addEventListener("submit", (e) => {
         e.preventDefault();
         if (input.value) {
-          socket.emit("chat message", `${nickName} ---> ${input.value}`);
+          socket.emit("chat message", `${nickName}--->${input.value}`);
           input.value = "";
         }
       });

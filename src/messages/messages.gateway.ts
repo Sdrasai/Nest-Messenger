@@ -53,11 +53,7 @@ export class MessagesGateway {
     let message = msg.split("--->")[1];
     let username = msg.split("--->")[0];
     const user = await this.userService.findByUsername(username);
-    const createdMessage = await this.messagesService.createMessageService(
-      user,
-      message
-    );
-    console.log(createdMessage);
+    await this.messagesService.createMessageService(user, message);
 
     this.server.emit("chat message", msg);
   }
