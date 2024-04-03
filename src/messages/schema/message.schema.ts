@@ -10,6 +10,7 @@ export class Message {
   @Prop()
   message: string;
 
+
   // @Prop()
   // client_offset: number;
 
