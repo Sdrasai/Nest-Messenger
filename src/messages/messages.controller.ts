@@ -51,7 +51,6 @@ export class messageController {
       `);
     } catch (error) {
       console.log(error);
-      // Handle error if necessary
     }
   }
 
