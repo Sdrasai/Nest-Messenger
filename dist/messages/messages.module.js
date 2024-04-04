@@ -11,7 +11,11 @@ const common_1 = require("@nestjs/common");
 const messages_service_1 = require("./messages.service");
 const messages_gateway_1 = require("./messages.gateway");
 <<<<<<< HEAD
+<<<<<<< HEAD
 const message_entity_1 = require("./entities/message.entity");
+=======
+const message_schema_1 = require("./schema/message.schema");
+>>>>>>> 563b972bb51baf7c058b82b4c70b02d22f39a585
 =======
 const message_schema_1 = require("./schema/message.schema");
 >>>>>>> 563b972bb51baf7c058b82b4c70b02d22f39a585
@@ -27,7 +31,11 @@ exports.MessagesModule = MessagesModule = __decorate([
     (0, common_1.Module)({
         imports: [
 <<<<<<< HEAD
+<<<<<<< HEAD
             mongoose_1.MongooseModule.forFeature([{ name: message_entity_1.Message.name, schema: message_entity_1.messageSchema }]),
+=======
+            mongoose_1.MongooseModule.forFeature([{ name: message_schema_1.Message.name, schema: message_schema_1.messageSchema }]),
+>>>>>>> 563b972bb51baf7c058b82b4c70b02d22f39a585
 =======
             mongoose_1.MongooseModule.forFeature([{ name: message_schema_1.Message.name, schema: message_schema_1.messageSchema }]),
 >>>>>>> 563b972bb51baf7c058b82b4c70b02d22f39a585

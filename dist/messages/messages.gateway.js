@@ -20,16 +20,22 @@ const socket_io_1 = require("socket.io");
 const common_1 = require("@nestjs/common");
 const jwt_1 = require("@nestjs/jwt");
 <<<<<<< HEAD
+<<<<<<< HEAD
 let MessagesGateway = MessagesGateway_1 = class MessagesGateway {
     constructor(messagesService, jwtService) {
         this.messagesService = messagesService;
 =======
+=======
+>>>>>>> 563b972bb51baf7c058b82b4c70b02d22f39a585
 const users_service_1 = require("../users/users.service");
 const uuid_1 = require("uuid");
 let MessagesGateway = MessagesGateway_1 = class MessagesGateway {
     constructor(messagesService, userService, jwtService) {
         this.messagesService = messagesService;
         this.userService = userService;
+<<<<<<< HEAD
+>>>>>>> 563b972bb51baf7c058b82b4c70b02d22f39a585
+=======
 >>>>>>> 563b972bb51baf7c058b82b4c70b02d22f39a585
         this.jwtService = jwtService;
         this.logger = new common_1.Logger(MessagesGateway_1.name);
@@ -40,15 +46,21 @@ let MessagesGateway = MessagesGateway_1 = class MessagesGateway {
     async handleConnection(client, ...args) {
         const { sockets } = this.server.sockets;
 <<<<<<< HEAD
+<<<<<<< HEAD
         this.logger.log(`Client id: ${client.id} connected`);
         this.logger.debug(`Number of connected clients: ${sockets.size}`);
         const extractedCookie = client.handshake.headers.cookie;
         const nickName = extractedCookie.split(";")[1].split("=")[1];
 =======
+=======
+>>>>>>> 563b972bb51baf7c058b82b4c70b02d22f39a585
         this.logger.log(`client id: ${client.id} connected`);
         this.logger.debug(`Number of connected clients: ${sockets.size}`);
         const extractedCookie = client.handshake.headers.cookie;
         const nickName = extractedCookie?.split(";")[1]?.split("=")[1];
+<<<<<<< HEAD
+>>>>>>> 563b972bb51baf7c058b82b4c70b02d22f39a585
+=======
 >>>>>>> 563b972bb51baf7c058b82b4c70b02d22f39a585
         client.emit("connected-user", nickName);
     }
@@ -57,11 +69,17 @@ let MessagesGateway = MessagesGateway_1 = class MessagesGateway {
     }
     async message(msg, client) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> 563b972bb51baf7c058b82b4c70b02d22f39a585
         let message = msg.split(":")[1];
         let username = msg.split(": ")[0];
         const user = await this.userService.findByUsername(username);
         await this.messagesService.createMessageService(user, message);
+<<<<<<< HEAD
+>>>>>>> 563b972bb51baf7c058b82b4c70b02d22f39a585
+=======
 >>>>>>> 563b972bb51baf7c058b82b4c70b02d22f39a585
         this.server.emit("chat message", msg);
     }
@@ -72,7 +90,10 @@ let MessagesGateway = MessagesGateway_1 = class MessagesGateway {
         client.broadcast.emit("stop typing", "");
     }
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> 563b972bb51baf7c058b82b4c70b02d22f39a585
     async handleCreateChatRoom(usernames, client) {
         const extractedCookie = client.handshake.headers.cookie;
         const nickName = extractedCookie?.split(";")[1]?.split("=")[1];
@@ -87,6 +108,9 @@ let MessagesGateway = MessagesGateway_1 = class MessagesGateway {
     sendMessageToRoom(roomId, message) {
         this.server.to(roomId).emit("message", message);
     }
+<<<<<<< HEAD
+>>>>>>> 563b972bb51baf7c058b82b4c70b02d22f39a585
+=======
 >>>>>>> 563b972bb51baf7c058b82b4c70b02d22f39a585
 };
 exports.MessagesGateway = MessagesGateway;
@@ -119,7 +143,10 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], MessagesGateway.prototype, "isNotTyping", null);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> 563b972bb51baf7c058b82b4c70b02d22f39a585
 __decorate([
     (0, websockets_1.SubscribeMessage)("createChatRoom"),
     __param(0, (0, websockets_1.MessageBody)()),
@@ -136,6 +163,9 @@ __decorate([
     __metadata("design:paramtypes", [String, socket_io_1.Socket]),
     __metadata("design:returntype", void 0)
 ], MessagesGateway.prototype, "handleJoinRoom", null);
+<<<<<<< HEAD
+>>>>>>> 563b972bb51baf7c058b82b4c70b02d22f39a585
+=======
 >>>>>>> 563b972bb51baf7c058b82b4c70b02d22f39a585
 exports.MessagesGateway = MessagesGateway = MessagesGateway_1 = __decorate([
     (0, websockets_1.WebSocketGateway)({
@@ -145,6 +175,10 @@ exports.MessagesGateway = MessagesGateway = MessagesGateway_1 = __decorate([
     }),
     __metadata("design:paramtypes", [messages_service_1.MessagesService,
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+        users_service_1.UsersService,
+>>>>>>> 563b972bb51baf7c058b82b4c70b02d22f39a585
 =======
         users_service_1.UsersService,
 >>>>>>> 563b972bb51baf7c058b82b4c70b02d22f39a585

@@ -23,6 +23,7 @@
 /// <reference types="mongoose/types/virtuals" />
 /// <reference types="mongoose/types/inferschematype" />
 <<<<<<< HEAD
+<<<<<<< HEAD
 import { CreateMessageDto } from './dto/create-message.dto';
 import { Message } from './entities/message.entity';
 import { Model } from 'mongoose';
@@ -33,12 +34,17 @@ export declare class MessagesService {
         _id: import("mongoose").Types.ObjectId;
     }>;
 =======
+=======
+>>>>>>> 563b972bb51baf7c058b82b4c70b02d22f39a585
 import { Message } from "./schema/message.schema";
 import { Model } from "mongoose";
 export declare class MessagesService {
     private messageModel;
     constructor(messageModel: Model<Message>);
     createMessageService(user: any, message: string): Promise<Message>;
+<<<<<<< HEAD
+>>>>>>> 563b972bb51baf7c058b82b4c70b02d22f39a585
+=======
 >>>>>>> 563b972bb51baf7c058b82b4c70b02d22f39a585
     findAllService(): import("mongoose").Query<(import("mongoose").Document<unknown, {}, Message> & Message & {
         _id: import("mongoose").Types.ObjectId;

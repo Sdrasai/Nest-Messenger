@@ -16,7 +16,11 @@ exports.MessagesService = void 0;
 const common_1 = require("@nestjs/common");
 const mongoose_1 = require("@nestjs/mongoose");
 <<<<<<< HEAD
+<<<<<<< HEAD
 const message_entity_1 = require("./entities/message.entity");
+=======
+const message_schema_1 = require("./schema/message.schema");
+>>>>>>> 563b972bb51baf7c058b82b4c70b02d22f39a585
 =======
 const message_schema_1 = require("./schema/message.schema");
 >>>>>>> 563b972bb51baf7c058b82b4c70b02d22f39a585
@@ -26,14 +30,20 @@ let MessagesService = class MessagesService {
         this.messageModel = messageModel;
     }
 <<<<<<< HEAD
+<<<<<<< HEAD
     createMessageService(createMessageDto) {
         return this.messageModel.create(createMessageDto);
 =======
+=======
+>>>>>>> 563b972bb51baf7c058b82b4c70b02d22f39a585
     async createMessageService(user, message) {
         return await this.messageModel.create({
             user,
             message,
         });
+<<<<<<< HEAD
+>>>>>>> 563b972bb51baf7c058b82b4c70b02d22f39a585
+=======
 >>>>>>> 563b972bb51baf7c058b82b4c70b02d22f39a585
     }
     findAllService() {
@@ -44,7 +54,11 @@ exports.MessagesService = MessagesService;
 exports.MessagesService = MessagesService = __decorate([
     (0, common_1.Injectable)(),
 <<<<<<< HEAD
+<<<<<<< HEAD
     __param(0, (0, mongoose_1.InjectModel)(message_entity_1.Message.name)),
+=======
+    __param(0, (0, mongoose_1.InjectModel)(message_schema_1.Message.name)),
+>>>>>>> 563b972bb51baf7c058b82b4c70b02d22f39a585
 =======
     __param(0, (0, mongoose_1.InjectModel)(message_schema_1.Message.name)),
 >>>>>>> 563b972bb51baf7c058b82b4c70b02d22f39a585

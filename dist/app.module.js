@@ -18,6 +18,11 @@ const auth_guard_1 = require("./common/guards/auth.guard");
 const messages_module_1 = require("./messages/messages.module");
 const messenger_middleware_1 = require("./middlewares/messenger.middleware");
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+const serve_static_1 = require("@nestjs/serve-static");
+const path_1 = require("path");
+>>>>>>> 563b972bb51baf7c058b82b4c70b02d22f39a585
 =======
 const serve_static_1 = require("@nestjs/serve-static");
 const path_1 = require("path");
@@ -35,11 +40,17 @@ exports.AppModule = AppModule = __decorate([
             auth_module_1.AuthModule,
             mongoose_1.MongooseModule.forRoot("mongodb://mongodb:27017/Messenger"),
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> 563b972bb51baf7c058b82b4c70b02d22f39a585
             serve_static_1.ServeStaticModule.forRoot({
                 serveRoot: "/api/v1/chat",
                 rootPath: (0, path_1.join)(__dirname, "../../../src", "client"),
             }),
+<<<<<<< HEAD
+>>>>>>> 563b972bb51baf7c058b82b4c70b02d22f39a585
+=======
 >>>>>>> 563b972bb51baf7c058b82b4c70b02d22f39a585
             messages_module_1.MessagesModule,
         ],

@@ -23,15 +23,21 @@
 /// <reference types="mongoose/types/virtuals" />
 /// <reference types="mongoose/types/inferschematype" />
 <<<<<<< HEAD
+<<<<<<< HEAD
 import { Model } from 'mongoose';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { IUser } from './user.interface';
 =======
+=======
+>>>>>>> 563b972bb51baf7c058b82b4c70b02d22f39a585
 import { Model } from "mongoose";
 import { CreateUserDto } from "./dto/create-user.dto";
 import { UpdateUserDto } from "./dto/update-user.dto";
 import { IUser } from "./user.interface";
+<<<<<<< HEAD
+>>>>>>> 563b972bb51baf7c058b82b4c70b02d22f39a585
+=======
 >>>>>>> 563b972bb51baf7c058b82b4c70b02d22f39a585
 export declare class UsersService {
     private userModel;
@@ -43,6 +49,10 @@ export declare class UsersService {
     remove(id: string): Promise<IUser>;
     findByUsername(username: string): Promise<IUser>;
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+    createChatRoom(roomId: string, usernames: string[] | string): Promise<string>;
+>>>>>>> 563b972bb51baf7c058b82b4c70b02d22f39a585
 =======
     createChatRoom(roomId: string, usernames: string[] | string): Promise<string>;
 >>>>>>> 563b972bb51baf7c058b82b4c70b02d22f39a585

@@ -6,6 +6,10 @@ const app_module_1 = require("./app.module");
 async function bootstrap() {
     const app = await core_1.NestFactory.create(app_module_1.AppModule);
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+    app.useStaticAssets("src/client");
+>>>>>>> 563b972bb51baf7c058b82b4c70b02d22f39a585
 =======
     app.useStaticAssets("src/client");
 >>>>>>> 563b972bb51baf7c058b82b4c70b02d22f39a585

@@ -27,6 +27,10 @@ export declare class User {
     username: string;
     password: string;
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+    userRooms: [string];
+>>>>>>> 563b972bb51baf7c058b82b4c70b02d22f39a585
 =======
     userRooms: [string];
 >>>>>>> 563b972bb51baf7c058b82b4c70b02d22f39a585

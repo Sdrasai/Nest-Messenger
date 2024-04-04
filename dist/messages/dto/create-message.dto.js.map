@@ -1,5 +1,9 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 {"version":3,"file":"create-message.dto.js","sourceRoot":"","sources":["../../../src/messages/dto/create-message.dto.ts"],"names":[],"mappings":";;;AACA,+DAAoD;AAEpD,MAAa,gBAAiB,SAAQ,wBAAO;CAAG;AAAhD,4CAAgD"}
+=======
+{"version":3,"file":"create-message.dto.js","sourceRoot":"","sources":["../../../src/messages/dto/create-message.dto.ts"],"names":[],"mappings":";;;AACA,6DAAmD;AAEnD,MAAa,gBAAiB,SAAQ,wBAAO;CAAG;AAAhD,4CAAgD"}
+>>>>>>> 563b972bb51baf7c058b82b4c70b02d22f39a585
 =======
 {"version":3,"file":"create-message.dto.js","sourceRoot":"","sources":["../../../src/messages/dto/create-message.dto.ts"],"names":[],"mappings":";;;AACA,6DAAmD;AAEnD,MAAa,gBAAiB,SAAQ,wBAAO;CAAG;AAAhD,4CAAgD"}
 >>>>>>> 563b972bb51baf7c058b82b4c70b02d22f39a585
