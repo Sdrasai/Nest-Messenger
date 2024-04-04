@@ -10,8 +10,10 @@ export declare class messageController {
     private jwtService;
     constructor(messagesService: MessagesService, usersService: UsersService, jwtService: JwtService);
     getRegisterForm(res: Response, req: Request): void;
-    registerInSocket(res: Response, req: Request, createUserDto: CreateUserDto): Response<any, Record<string, any>>;
+    registerInSocket(res: Response, req: Request, createUserDto: CreateUserDto): void;
     getLoginForm(res: Response, req: Request): void;
     logInSocket(res: Response, req: Request, createUserDto: CreateUserDto): Promise<void>;
     getIndexChat(res: Response, req: Request, next: NextFunction): void;
+    homePage(res: Response, req: Request, next: NextFunction): void;
+    roomPage(roomId: any, res: Response, req: Request, next: NextFunction): void;
 }

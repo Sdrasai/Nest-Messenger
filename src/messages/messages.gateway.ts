@@ -6,13 +6,11 @@ import {
   ConnectedSocket,
 } from "@nestjs/websockets";
 import { MessagesService } from "./messages.service";
-
 import { Server, Socket } from "socket.io";
-import { Logger, Req } from "@nestjs/common";
-import { Request } from "express";
+import { Logger } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
-import { SECRET_KEY } from "src/common/constants/auth.constants";
 import { UsersService } from "src/users/users.service";
+import { v4 as uuidv4 } from "uuid";
 
 @WebSocketGateway({
   cors: {
@@ -36,11 +34,11 @@ export class MessagesGateway {
   async handleConnection(client: any, ...args: any[]) {
     const { sockets } = this.server.sockets;
 
-    this.logger.log(`Client id: ${client.id} connected`);
+    this.logger.log(`client id: ${client.id} connected`);
     this.logger.debug(`Number of connected clients: ${sockets.size}`);
 
     const extractedCookie = client.handshake.headers.cookie;
-    const nickName = extractedCookie.split(";")[1].split("=")[1];
+    const nickName = extractedCookie?.split(";")[1]?.split("=")[1];
     client.emit("connected-user", nickName);
   }
 
@@ -50,14 +48,10 @@ export class MessagesGateway {
 
   @SubscribeMessage("chat message")
   async message(@MessageBody() msg: any, @ConnectedSocket() client: Socket) {
-    let message = msg.split("--->")[1];
-    let username = msg.split("--->")[0];
+    let message = msg.split(":")[1];
+    let username = msg.split(": ")[0];
     const user = await this.userService.findByUsername(username);
-    const createdMessage = await this.messagesService.createMessageService(
-      user,
-      message
-    );
-    console.log(createdMessage);
+    await this.messagesService.createMessageService(user, message);
 
     this.server.emit("chat message", msg);
   }
@@ -70,5 +64,31 @@ export class MessagesGateway {
   @SubscribeMessage("stop typing")
   isNotTyping(@MessageBody() msg: any, @ConnectedSocket() client: Socket) {
     client.broadcast.emit("stop typing", "");
+  }
+
+  @SubscribeMessage("createChatRoom")
+  async handleCreateChatRoom(
+    @MessageBody() usernames: string[],
+    @ConnectedSocket() client: Socket
+  ): Promise<void> {
+    const extractedCookie = client.handshake.headers.cookie;
+    const nickName = extractedCookie?.split(";")[1]?.split("=")[1];
+    const roomId = uuidv4();
+
+    await this.userService.createChatRoom(roomId, nickName);
+    const roomTarget = await this.userService.createChatRoom(roomId, usernames);
+    client.emit("chatRoomCreated", roomTarget); // Emit the room ID back to the client
+  }
+
+  @SubscribeMessage("joinRoom")
+  handleJoinRoom(
+    @MessageBody() roomId: string,
+    @ConnectedSocket() client: Socket
+  ): void {
+    client.join(roomId); // Join the client to the specified room
+  }
+
+  sendMessageToRoom(roomId: string, message: string): void {
+    this.server.to(roomId).emit("message", message); // Broadcast the message to all users in the room
   }
 }

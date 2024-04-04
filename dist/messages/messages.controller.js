@@ -33,10 +33,12 @@ let messageController = class messageController {
     registerInSocket(res, req, createUserDto) {
         try {
             this.usersService.create(createUserDto);
-            return res.json({
-                msg: "user has been created by socket inputs",
-                user: createUserDto.username,
-            });
+            res.send(`
+        <script>
+          alert("You're registered successfully!");
+          window.location.href = 'http://localhost:3000/api/v1/login';
+        </script>
+      `);
         }
         catch (error) {
             console.log(error);
@@ -54,7 +56,6 @@ let messageController = class messageController {
             }
             const payload = { username: user.username, sub: user.id };
             const access_token = await this.jwtService.signAsync(payload);
-            console.log("Tokennnnn", access_token);
             return res
                 .cookie("access_token", access_token, {
                 httpOnly: true,
@@ -68,6 +69,24 @@ let messageController = class messageController {
         }
     }
     getIndexChat(res, req, next) {
+        try {
+            const filePath = path.resolve(__dirname, "../../src/client/index.html");
+            res.sendFile(filePath);
+        }
+        catch (error) {
+            console.log("Error", error);
+        }
+    }
+    homePage(res, req, next) {
+        try {
+            const filePath = path.resolve(__dirname, "../../src/client/home.html");
+            res.sendFile(filePath);
+        }
+        catch (error) {
+            console.log("Error", error);
+        }
+    }
+    roomPage(roomId, res, req, next) {
         try {
             const filePath = path.resolve(__dirname, "../../src/client/index.html");
             res.sendFile(filePath);
@@ -121,6 +140,25 @@ __decorate([
     __metadata("design:paramtypes", [Object, Object, Function]),
     __metadata("design:returntype", void 0)
 ], messageController.prototype, "getIndexChat", null);
+__decorate([
+    (0, common_1.Get)("home"),
+    __param(0, (0, common_1.Res)()),
+    __param(1, (0, common_1.Req)()),
+    __param(2, (0, common_1.Next)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, Object, Function]),
+    __metadata("design:returntype", void 0)
+], messageController.prototype, "homePage", null);
+__decorate([
+    (0, common_1.Get)("chat/:roomId"),
+    __param(0, (0, common_1.Param)("roomId")),
+    __param(1, (0, common_1.Res)()),
+    __param(2, (0, common_1.Req)()),
+    __param(3, (0, common_1.Next)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, Object, Object, Function]),
+    __metadata("design:returntype", void 0)
+], messageController.prototype, "roomPage", null);
 exports.messageController = messageController = __decorate([
     (0, public_decorators_1.Public)(),
     (0, common_1.Controller)("api/v1"),

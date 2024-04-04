@@ -6,16 +6,16 @@ import {
   Controller,
   Get,
   Next,
+  Param,
   Post,
   Req,
   Res,
   UnauthorizedException,
-  UseGuards,
 } from "@nestjs/common";
-import { dirname, join } from "path";
+
 import { Response, Request, NextFunction } from "express";
 import { CreateUserDto } from "src/users/dto/create-user.dto";
-import { CreateMessageDto } from "./dto/create-message.dto";
+
 import { Public } from "src/common/decorators/public.decorators";
 import * as path from "path";
 
@@ -30,8 +30,6 @@ export class messageController {
 
   @Get("register")
   getRegisterForm(@Res() res: Response, @Req() req: Request) {
-    // res.sendFile(join(__dirname, 'register.html'))
-    // res.sendFile(join("/app/src/client", "register.html"));
     const filePath = path.resolve(__dirname, "../../src/client/register.html");
     res.sendFile(filePath);
   }
@@ -44,19 +42,22 @@ export class messageController {
   ) {
     try {
       this.usersService.create(createUserDto);
-      return res.json({
-        msg: "user has been created by socket inputs",
-        user: createUserDto.username,
-      });
+
+      // Send success message and redirect to chat page
+      res.send(`
+        <script>
+          alert("You're registered successfully!");
+          window.location.href = 'http://localhost:3000/api/v1/login';
+        </script>
+      `);
     } catch (error) {
       console.log(error);
+      // Handle error if necessary
     }
   }
 
   @Get("login")
   getLoginForm(@Res() res: Response, @Req() req: Request) {
-    // res.sendFile(join(__dirname, 'login.html'))
-    // res.sendFile(join("/app/src/client", "login.html"));
     const filePath = path.resolve(__dirname, "../../src/client/login.html");
     res.sendFile(filePath);
   }
@@ -77,8 +78,6 @@ export class messageController {
 
       const payload = { username: user.username, sub: user.id };
       const access_token = await this.jwtService.signAsync(payload);
-
-      console.log("Tokennnnn", access_token);
 
       return res
         .cookie("access_token", access_token, {
@@ -104,7 +103,37 @@ export class messageController {
       res.sendFile(filePath);
     } catch (error) {
       console.log("Error", error);
-      // return res.redirect("http://localhost:3000/api/v1/login");
+    }
+  }
+
+  @Get("home")
+  homePage(
+    @Res() res: Response,
+    @Req() req: Request,
+    @Next() next: NextFunction
+  ) {
+    try {
+      // return res.sendFile(join("/app/src/client", "index.html"));
+      const filePath = path.resolve(__dirname, "../../src/client/home.html");
+      res.sendFile(filePath);
+    } catch (error) {
+      console.log("Error", error);
+    }
+  }
+
+  @Get("chat/:roomId")
+  roomPage(
+    @Param("roomId") roomId: any,
+    @Res() res: Response,
+    @Req() req: Request,
+    @Next() next: NextFunction
+  ) {
+    try {
+      // return res.sendFile(join("/app/src/client", "index.html"));
+      const filePath = path.resolve(__dirname, "../../src/client/index.html");
+      res.sendFile(filePath);
+    } catch (error) {
+      console.log("Error", error);
     }
   }
 }
