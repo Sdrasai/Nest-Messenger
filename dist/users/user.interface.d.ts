@@ -22,10 +22,18 @@
 /// <reference types="mongoose/types/validation" />
 /// <reference types="mongoose/types/virtuals" />
 /// <reference types="mongoose/types/inferschematype" />
+<<<<<<< HEAD
 import { Document } from 'mongoose';
 export interface IUser extends Document {
     username: string;
     password: string;
+=======
+import { Document } from "mongoose";
+export interface IUser extends Document {
+    username: string;
+    password: string;
+    userRooms: [string];
+>>>>>>> 563b972bb51baf7c058b82b4c70b02d22f39a585
     email?: string;
     phoneNumber?: string;
     nickName?: string;

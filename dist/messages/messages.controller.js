@@ -17,9 +17,15 @@ const messages_service_1 = require("./messages.service");
 const users_service_1 = require("../users/users.service");
 const jwt_1 = require("@nestjs/jwt");
 const common_1 = require("@nestjs/common");
+<<<<<<< HEAD
 const path_1 = require("path");
 const create_user_dto_1 = require("../users/dto/create-user.dto");
 const public_decorators_1 = require("../common/decorators/public.decorators");
+=======
+const create_user_dto_1 = require("../users/dto/create-user.dto");
+const public_decorators_1 = require("../common/decorators/public.decorators");
+const path = require("path");
+>>>>>>> 563b972bb51baf7c058b82b4c70b02d22f39a585
 let messageController = class messageController {
     constructor(messagesService, usersService, jwtService) {
         this.messagesService = messagesService;
@@ -27,22 +33,41 @@ let messageController = class messageController {
         this.jwtService = jwtService;
     }
     getRegisterForm(res, req) {
+<<<<<<< HEAD
         res.sendFile((0, path_1.join)("/app/src/client", "register.html"));
+=======
+        const filePath = path.resolve(__dirname, "../../src/client/register.html");
+        res.sendFile(filePath);
+>>>>>>> 563b972bb51baf7c058b82b4c70b02d22f39a585
     }
     registerInSocket(res, req, createUserDto) {
         try {
             this.usersService.create(createUserDto);
+<<<<<<< HEAD
             return res.json({
                 msg: "user has been created by socket inputs",
                 user: createUserDto.username,
             });
+=======
+            res.send(`
+        <script>
+          alert("You're registered successfully!");
+          window.location.href = 'http://localhost:3000/api/v1/login';
+        </script>
+      `);
+>>>>>>> 563b972bb51baf7c058b82b4c70b02d22f39a585
         }
         catch (error) {
             console.log(error);
         }
     }
     getLoginForm(res, req) {
+<<<<<<< HEAD
         res.sendFile((0, path_1.join)("/app/src/client", "login.html"));
+=======
+        const filePath = path.resolve(__dirname, "../../src/client/login.html");
+        res.sendFile(filePath);
+>>>>>>> 563b972bb51baf7c058b82b4c70b02d22f39a585
     }
     async logInSocket(res, req, createUserDto) {
         try {
@@ -52,7 +77,10 @@ let messageController = class messageController {
             }
             const payload = { username: user.username, sub: user.id };
             const access_token = await this.jwtService.signAsync(payload);
+<<<<<<< HEAD
             console.log("Tokennnnn", access_token);
+=======
+>>>>>>> 563b972bb51baf7c058b82b4c70b02d22f39a585
             return res
                 .cookie("access_token", access_token, {
                 httpOnly: true,
@@ -67,7 +95,30 @@ let messageController = class messageController {
     }
     getIndexChat(res, req, next) {
         try {
+<<<<<<< HEAD
             return res.sendFile((0, path_1.join)("/app/src/client", "index.html"));
+=======
+            const filePath = path.resolve(__dirname, "../../src/client/index.html");
+            res.sendFile(filePath);
+        }
+        catch (error) {
+            console.log("Error", error);
+        }
+    }
+    homePage(res, req, next) {
+        try {
+            const filePath = path.resolve(__dirname, "../../src/client/home.html");
+            res.sendFile(filePath);
+        }
+        catch (error) {
+            console.log("Error", error);
+        }
+    }
+    roomPage(roomId, res, req, next) {
+        try {
+            const filePath = path.resolve(__dirname, "../../src/client/index.html");
+            res.sendFile(filePath);
+>>>>>>> 563b972bb51baf7c058b82b4c70b02d22f39a585
         }
         catch (error) {
             console.log("Error", error);
@@ -118,6 +169,28 @@ __decorate([
     __metadata("design:paramtypes", [Object, Object, Function]),
     __metadata("design:returntype", void 0)
 ], messageController.prototype, "getIndexChat", null);
+<<<<<<< HEAD
+=======
+__decorate([
+    (0, common_1.Get)("home"),
+    __param(0, (0, common_1.Res)()),
+    __param(1, (0, common_1.Req)()),
+    __param(2, (0, common_1.Next)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, Object, Function]),
+    __metadata("design:returntype", void 0)
+], messageController.prototype, "homePage", null);
+__decorate([
+    (0, common_1.Get)("chat/:roomId"),
+    __param(0, (0, common_1.Param)("roomId")),
+    __param(1, (0, common_1.Res)()),
+    __param(2, (0, common_1.Req)()),
+    __param(3, (0, common_1.Next)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, Object, Object, Function]),
+    __metadata("design:returntype", void 0)
+], messageController.prototype, "roomPage", null);
+>>>>>>> 563b972bb51baf7c058b82b4c70b02d22f39a585
 exports.messageController = messageController = __decorate([
     (0, public_decorators_1.Public)(),
     (0, common_1.Controller)("api/v1"),
