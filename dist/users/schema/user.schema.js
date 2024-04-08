@@ -23,19 +23,10 @@ __decorate([
     __metadata("design:type", String)
 ], User.prototype, "password", void 0);
 __decorate([
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-=======
->>>>>>> 563b972bb51baf7c058b82b4c70b02d22f39a585
     (0, mongoose_1.Prop)({ type: Array }),
     __metadata("design:type", Array)
 ], User.prototype, "userRooms", void 0);
 __decorate([
-<<<<<<< HEAD
->>>>>>> 563b972bb51baf7c058b82b4c70b02d22f39a585
-=======
->>>>>>> 563b972bb51baf7c058b82b4c70b02d22f39a585
     (0, mongoose_1.Prop)(),
     __metadata("design:type", String)
 ], User.prototype, "email", void 0);

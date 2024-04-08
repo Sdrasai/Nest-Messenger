@@ -19,7 +19,7 @@ import { join } from "path";
   imports: [
     UsersModule,
     AuthModule,
-    MongooseModule.forRoot("mongodb://mongodb:27017/Messenger"),
+    MongooseModule.forRoot("mongodb://localhost:27017/Messenger"),
     // MongooseModule.forFeatureAsync([
     //   {
     //     name: Message.name,

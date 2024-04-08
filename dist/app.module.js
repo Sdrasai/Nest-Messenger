@@ -17,16 +17,8 @@ const core_1 = require("@nestjs/core");
 const auth_guard_1 = require("./common/guards/auth.guard");
 const messages_module_1 = require("./messages/messages.module");
 const messenger_middleware_1 = require("./middlewares/messenger.middleware");
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
 const serve_static_1 = require("@nestjs/serve-static");
 const path_1 = require("path");
->>>>>>> 563b972bb51baf7c058b82b4c70b02d22f39a585
-=======
-const serve_static_1 = require("@nestjs/serve-static");
-const path_1 = require("path");
->>>>>>> 563b972bb51baf7c058b82b4c70b02d22f39a585
 let AppModule = class AppModule {
     configure(consumer) {
         consumer.apply(messenger_middleware_1.SocketAuthGuardMiddleware).forRoutes("api/v1/chat");
@@ -38,20 +30,11 @@ exports.AppModule = AppModule = __decorate([
         imports: [
             users_module_1.UsersModule,
             auth_module_1.AuthModule,
-            mongoose_1.MongooseModule.forRoot("mongodb://mongodb:27017/Messenger"),
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-=======
->>>>>>> 563b972bb51baf7c058b82b4c70b02d22f39a585
+            mongoose_1.MongooseModule.forRoot("mongodb://localhost:27017/Messenger"),
             serve_static_1.ServeStaticModule.forRoot({
                 serveRoot: "/api/v1/chat",
                 rootPath: (0, path_1.join)(__dirname, "../../../src", "client"),
             }),
-<<<<<<< HEAD
->>>>>>> 563b972bb51baf7c058b82b4c70b02d22f39a585
-=======
->>>>>>> 563b972bb51baf7c058b82b4c70b02d22f39a585
             messages_module_1.MessagesModule,
         ],
         controllers: [app_controller_1.AppController],

@@ -10,15 +10,7 @@ exports.MessagesModule = void 0;
 const common_1 = require("@nestjs/common");
 const messages_service_1 = require("./messages.service");
 const messages_gateway_1 = require("./messages.gateway");
-<<<<<<< HEAD
-<<<<<<< HEAD
-const message_entity_1 = require("./entities/message.entity");
-=======
 const message_schema_1 = require("./schema/message.schema");
->>>>>>> 563b972bb51baf7c058b82b4c70b02d22f39a585
-=======
-const message_schema_1 = require("./schema/message.schema");
->>>>>>> 563b972bb51baf7c058b82b4c70b02d22f39a585
 const mongoose_1 = require("@nestjs/mongoose");
 const jwt_1 = require("@nestjs/jwt");
 const auth_constants_1 = require("../common/constants/auth.constants");
@@ -30,15 +22,7 @@ exports.MessagesModule = MessagesModule;
 exports.MessagesModule = MessagesModule = __decorate([
     (0, common_1.Module)({
         imports: [
-<<<<<<< HEAD
-<<<<<<< HEAD
-            mongoose_1.MongooseModule.forFeature([{ name: message_entity_1.Message.name, schema: message_entity_1.messageSchema }]),
-=======
             mongoose_1.MongooseModule.forFeature([{ name: message_schema_1.Message.name, schema: message_schema_1.messageSchema }]),
->>>>>>> 563b972bb51baf7c058b82b4c70b02d22f39a585
-=======
-            mongoose_1.MongooseModule.forFeature([{ name: message_schema_1.Message.name, schema: message_schema_1.messageSchema }]),
->>>>>>> 563b972bb51baf7c058b82b4c70b02d22f39a585
             jwt_1.JwtModule.register({
                 global: true,
                 secret: auth_constants_1.SECRET_KEY,

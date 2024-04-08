@@ -41,11 +41,6 @@ let UsersService = class UsersService {
     async findByUsername(username) {
         return await this.userModel.findOne({ username });
     }
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-=======
->>>>>>> 563b972bb51baf7c058b82b4c70b02d22f39a585
     async createChatRoom(roomId, usernames) {
         if (Array.isArray(usernames)) {
             usernames.forEach(async (user) => {
@@ -57,10 +52,6 @@ let UsersService = class UsersService {
         }
         return roomId;
     }
-<<<<<<< HEAD
->>>>>>> 563b972bb51baf7c058b82b4c70b02d22f39a585
-=======
->>>>>>> 563b972bb51baf7c058b82b4c70b02d22f39a585
 };
 exports.UsersService = UsersService;
 exports.UsersService = UsersService = __decorate([

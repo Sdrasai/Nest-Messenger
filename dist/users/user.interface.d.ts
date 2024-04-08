@@ -22,24 +22,11 @@
 /// <reference types="mongoose/types/validation" />
 /// <reference types="mongoose/types/virtuals" />
 /// <reference types="mongoose/types/inferschematype" />
-<<<<<<< HEAD
-<<<<<<< HEAD
-import { Document } from 'mongoose';
-export interface IUser extends Document {
-    username: string;
-    password: string;
-=======
-=======
->>>>>>> 563b972bb51baf7c058b82b4c70b02d22f39a585
 import { Document } from "mongoose";
 export interface IUser extends Document {
     username: string;
     password: string;
     userRooms: [string];
-<<<<<<< HEAD
->>>>>>> 563b972bb51baf7c058b82b4c70b02d22f39a585
-=======
->>>>>>> 563b972bb51baf7c058b82b4c70b02d22f39a585
     email?: string;
     phoneNumber?: string;
     nickName?: string;
