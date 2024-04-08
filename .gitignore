@@ -1,3 +1,8 @@
 node_modules
+<<<<<<< HEAD
 .vscode
 dist
+=======
+dist
+.vscode
+>>>>>>> 5e553e57e490483e319f607598792c2ab841dca2
