@@ -62,6 +62,7 @@ export class MessagesGateway {
     const chatRoom = await this.chatRoomService.findByRoomId(roomId);
     await this.messagesService.createMessageService(user, message, chatRoom);
 
+    //TODO: create Room in Socket + emit the msg in Room
     this.server.emit("chat message", msg);
   }
 
@@ -88,12 +89,16 @@ export class MessagesGateway {
     if (Array.isArray(usernames)) {
       usernames.forEach(async (user) => {
         let users = await this.userService.findByUsername(user);
+        console.log("++++++++++++++++++", users);
+
         usersId.push(users._id);
       });
       let mainUser = await this.userService.findByUsername(nickName);
       usersId.push(mainUser._id);
 
       // await this.chatRoomService.createChatRoom(roomId, nickName);
+      console.log("++++++++++++++++++", usersId);
+
       const roomTarget = await this.chatRoomService.createChatRoom(
         roomId,
         usersId
