@@ -12,10 +12,15 @@ export class MessagesService {
     @InjectModel(Message.name) private messageModel: Model<Message>
   ) {}
 
-  async createMessageService(user: any, message: string): Promise<Message> {
+  async createMessageService(
+    user: any,
+    message: string,
+    chatRoom: any
+  ): Promise<Message> {
     return await this.messageModel.create({
       user,
       message,
+      chatRoom,
     });
   }
   findAllService() {

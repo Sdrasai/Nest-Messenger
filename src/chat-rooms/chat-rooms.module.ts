@@ -13,5 +13,6 @@ import { ChatRooms, chatRoomsSchema } from "./schema/chat-room.schema";
     UsersModule,
   ],
   providers: [ChatRoomsGateway, ChatRoomsService],
+  exports: [ChatRoomsService],
 })
 export class ChatRoomsModule {}
