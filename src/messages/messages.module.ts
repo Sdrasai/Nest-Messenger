@@ -9,6 +9,7 @@ import { SECRET_KEY } from "src/common/constants/auth.constants";
 import { AuthService } from "src/auth/auth.service";
 import { UsersModule } from "src/users/users.module";
 import { messageController } from "./messages.controller";
+import { ChatRoomsModule } from "src/chat-rooms/chat-rooms.module";
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { messageController } from "./messages.controller";
       signOptions: { expiresIn: 60 * 60 * 60 },
     }),
     UsersModule,
+    ChatRoomsModule,
   ],
   controllers: [messageController],
   providers: [MessagesGateway, MessagesService],

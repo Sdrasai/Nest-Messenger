@@ -27,7 +27,7 @@ import { Model } from "mongoose";
 export declare class MessagesService {
     private messageModel;
     constructor(messageModel: Model<Message>);
-    createMessageService(user: any, message: string): Promise<Message>;
+    createMessageService(user: any, message: string, chatRoom: any): Promise<Message>;
     findAllService(): import("mongoose").Query<(import("mongoose").Document<unknown, {}, Message> & Message & {
         _id: import("mongoose").Types.ObjectId;
     })[], import("mongoose").Document<unknown, {}, Message> & Message & {

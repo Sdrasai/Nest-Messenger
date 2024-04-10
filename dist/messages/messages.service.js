@@ -21,10 +21,11 @@ let MessagesService = class MessagesService {
     constructor(messageModel) {
         this.messageModel = messageModel;
     }
-    async createMessageService(user, message) {
+    async createMessageService(user, message, chatRoom) {
         return await this.messageModel.create({
             user,
             message,
+            chatRoom,
         });
     }
     findAllService() {

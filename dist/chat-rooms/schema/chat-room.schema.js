@@ -9,28 +9,22 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.messageSchema = exports.Message = void 0;
+exports.chatRoomsSchema = exports.ChatRooms = void 0;
 const mongoose_1 = require("@nestjs/mongoose");
 const mongoose_2 = require("mongoose");
-const chat_room_schema_1 = require("../../chat-rooms/schema/chat-room.schema");
-const user_schema_1 = require("../../users/schema/user.schema");
-let Message = class Message {
+let ChatRooms = class ChatRooms {
 };
-exports.Message = Message;
+exports.ChatRooms = ChatRooms;
 __decorate([
-    (0, mongoose_1.Prop)({ type: mongoose_2.Types.ObjectId, ref: "User" }),
-    __metadata("design:type", user_schema_1.User)
-], Message.prototype, "user", void 0);
+    (0, mongoose_1.Prop)({ type: [mongoose_2.Types.ObjectId], ref: "User" }),
+    __metadata("design:type", Array)
+], ChatRooms.prototype, "user", void 0);
 __decorate([
-    (0, mongoose_1.Prop)(),
+    (0, mongoose_1.Prop)({ unique: true }),
     __metadata("design:type", String)
-], Message.prototype, "message", void 0);
-__decorate([
-    (0, mongoose_1.Prop)({ type: mongoose_2.Types.ObjectId, ref: "ChatRooms" }),
-    __metadata("design:type", chat_room_schema_1.ChatRooms)
-], Message.prototype, "chatRoom", void 0);
-exports.Message = Message = __decorate([
+], ChatRooms.prototype, "chatRoomId", void 0);
+exports.ChatRooms = ChatRooms = __decorate([
     (0, mongoose_1.Schema)({ timestamps: true })
-], Message);
-exports.messageSchema = mongoose_1.SchemaFactory.createForClass(Message);
-//# sourceMappingURL=message.schema.js.map
+], ChatRooms);
+exports.chatRoomsSchema = mongoose_1.SchemaFactory.createForClass(ChatRooms);
+//# sourceMappingURL=chat-room.schema.js.map

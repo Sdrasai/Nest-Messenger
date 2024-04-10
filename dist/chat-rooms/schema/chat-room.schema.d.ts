@@ -23,15 +23,13 @@
 /// <reference types="mongoose/types/virtuals" />
 /// <reference types="mongoose/types/inferschematype" />
 import { Types } from "mongoose";
-import { ChatRooms } from "src/chat-rooms/schema/chat-room.schema";
 import { User } from "src/users/schema/user.schema";
-export declare class Message {
-    user: User;
-    message: string;
-    chatRoom: ChatRooms;
+export declare class ChatRooms {
+    user: Array<User>;
+    chatRoomId: string;
 }
-export declare const messageSchema: import("mongoose").Schema<Message, import("mongoose").Model<Message, any, any, any, import("mongoose").Document<unknown, any, Message> & Message & {
+export declare const chatRoomsSchema: import("mongoose").Schema<ChatRooms, import("mongoose").Model<ChatRooms, any, any, any, import("mongoose").Document<unknown, any, ChatRooms> & ChatRooms & {
     _id: Types.ObjectId;
-}, any>, {}, {}, {}, {}, import("mongoose").DefaultSchemaOptions, Message, import("mongoose").Document<unknown, {}, import("mongoose").FlatRecord<Message>> & import("mongoose").FlatRecord<Message> & {
+}, any>, {}, {}, {}, {}, import("mongoose").DefaultSchemaOptions, ChatRooms, import("mongoose").Document<unknown, {}, import("mongoose").FlatRecord<ChatRooms>> & import("mongoose").FlatRecord<ChatRooms> & {
     _id: Types.ObjectId;
 }>;

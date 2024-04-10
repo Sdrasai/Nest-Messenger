@@ -19,6 +19,7 @@ const messages_module_1 = require("./messages/messages.module");
 const messenger_middleware_1 = require("./middlewares/messenger.middleware");
 const serve_static_1 = require("@nestjs/serve-static");
 const path_1 = require("path");
+const chat_rooms_module_1 = require("./chat-rooms/chat-rooms.module");
 let AppModule = class AppModule {
     configure(consumer) {
         consumer.apply(messenger_middleware_1.SocketAuthGuardMiddleware).forRoutes("api/v1/chat");
@@ -36,6 +37,7 @@ exports.AppModule = AppModule = __decorate([
                 rootPath: (0, path_1.join)(__dirname, "../../../src", "client"),
             }),
             messages_module_1.MessagesModule,
+            chat_rooms_module_1.ChatRoomsModule,
         ],
         controllers: [app_controller_1.AppController],
         providers: [

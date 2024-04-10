@@ -16,6 +16,7 @@ const jwt_1 = require("@nestjs/jwt");
 const auth_constants_1 = require("../common/constants/auth.constants");
 const users_module_1 = require("../users/users.module");
 const messages_controller_1 = require("./messages.controller");
+const chat_rooms_module_1 = require("../chat-rooms/chat-rooms.module");
 let MessagesModule = class MessagesModule {
 };
 exports.MessagesModule = MessagesModule;
@@ -29,6 +30,7 @@ exports.MessagesModule = MessagesModule = __decorate([
                 signOptions: { expiresIn: 60 * 60 * 60 },
             }),
             users_module_1.UsersModule,
+            chat_rooms_module_1.ChatRoomsModule,
         ],
         controllers: [messages_controller_1.messageController],
         providers: [messages_gateway_1.MessagesGateway, messages_service_1.MessagesService],

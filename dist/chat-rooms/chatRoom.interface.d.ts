@@ -22,16 +22,8 @@
 /// <reference types="mongoose/types/validation" />
 /// <reference types="mongoose/types/virtuals" />
 /// <reference types="mongoose/types/inferschematype" />
-import { Types } from "mongoose";
-import { ChatRooms } from "src/chat-rooms/schema/chat-room.schema";
-import { User } from "src/users/schema/user.schema";
-export declare class Message {
-    user: User;
-    message: string;
-    chatRoom: ChatRooms;
+import { Document } from "mongoose";
+export interface IChatRooms extends Document {
+    user: [string];
+    chatRoomId: string;
 }
-export declare const messageSchema: import("mongoose").Schema<Message, import("mongoose").Model<Message, any, any, any, import("mongoose").Document<unknown, any, Message> & Message & {
-    _id: Types.ObjectId;
-}, any>, {}, {}, {}, {}, import("mongoose").DefaultSchemaOptions, Message, import("mongoose").Document<unknown, {}, import("mongoose").FlatRecord<Message>> & import("mongoose").FlatRecord<Message> & {
-    _id: Types.ObjectId;
-}>;
