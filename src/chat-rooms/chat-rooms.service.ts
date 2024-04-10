@@ -41,12 +41,26 @@ export class ChatRoomsService {
     roomId: string,
     usernames: string[] | string
   ): Promise<string> {
-    const checkIfExist = await this.chatRoomModel.findOne({ user: usernames });
-    if (checkIfExist) {
-      return checkIfExist.chatRoomId;
-    } else {
-      await this.chatRoomModel.create({ user: usernames, chatRoomId: roomId });
-      return roomId;
+    if (usernames.length == 2) {
+      const checkIfExist = await this.chatRoomModel.findOne({
+        user: usernames,
+      });
+      const usernames1 = [];
+      usernames1.push(usernames[1]);
+      usernames1.push(usernames[0]);
+      const checkIfExist1 = await this.chatRoomModel.findOne({
+        user: usernames1,
+      });
+      if (checkIfExist) {
+        return checkIfExist.chatRoomId;
+      } else if (checkIfExist1) {
+        return checkIfExist1.chatRoomId;
+      }
     }
+    await this.chatRoomModel.create({
+      user: usernames,
+      chatRoomId: roomId,
+    });
+    return roomId;
   }
 }
