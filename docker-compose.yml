@@ -10,7 +10,6 @@ services:
     volumes:
       - mongodb_data_container_messenger:/data/db
 
-<<<<<<< HEAD
   # app:
   #   build:
   #     context: .
@@ -24,21 +23,6 @@ services:
   #     - mongodb
   #   volumes:
   #     - ./:/app
-=======
-  app:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    container_name: nest-docker-app-messenger
-    environment:
-      - PORT=${PORT}
-    ports:
-      - "3000:3000"
-    depends_on:
-      - mongodb
-    volumes:
-      - ./:/app
->>>>>>> 5e553e57e490483e319f607598792c2ab841dca2
 
 volumes:
   mongodb_data_container_messenger:

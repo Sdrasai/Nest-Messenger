@@ -12,11 +12,8 @@ export class Message {
   @Prop()
   message: string;
 
-<<<<<<< HEAD
-=======
   @Prop({ type: Types.ObjectId, ref: "ChatRooms" })
   chatRoom: ChatRooms;
->>>>>>> 5e553e57e490483e319f607598792c2ab841dca2
 
   // @Prop()
   // client_offset: number;
