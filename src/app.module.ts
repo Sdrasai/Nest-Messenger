@@ -20,7 +20,7 @@ import { ChatRoomsModule } from "./chat-rooms/chat-rooms.module";
   imports: [
     UsersModule,
     AuthModule,
-    MongooseModule.forRoot("mongodb://localhost:27017/Messenger"),
+    MongooseModule.forRoot("mongodb://mongodb:27017/Messenger"),
     // MongooseModule.forFeatureAsync([
     //   {
     //     name: Message.name,

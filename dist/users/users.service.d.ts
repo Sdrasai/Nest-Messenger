@@ -35,4 +35,5 @@ export declare class UsersService {
     update(id: string, updateUserDto: UpdateUserDto): Promise<IUser>;
     remove(id: string): Promise<IUser>;
     findByUsername(username: string): Promise<IUser>;
+    createChatRoom(roomId: string, usernames: string[] | string): Promise<string>;
 }
