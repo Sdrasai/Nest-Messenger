@@ -11,7 +11,10 @@ import { IChatRooms } from "src/chat-rooms/chatRoom.interface";
 
 @Injectable()
 export class UsersService {
-  constructor(@InjectModel(User.name) private userModel: Model<IUser>) {}
+  constructor(
+    @InjectModel(User.name) private userModel: Model<IUser>
+    // @InjectModel(ChatRooms.name) private chatRoomModel: Model<IChatRooms>
+  ) {}
   async create(createUserDto: CreateUserDto): Promise<IUser> {
     return await this.userModel.create(createUserDto);
   }
@@ -29,6 +32,7 @@ export class UsersService {
       new: true,
     });
   }
+
   async remove(id: string): Promise<IUser> {
     return await this.userModel.findByIdAndDelete(id);
   }
@@ -36,30 +40,30 @@ export class UsersService {
   async findByUsername(username: string): Promise<IUser> {
     return await this.userModel.findOne({ username });
   }
+
+  // async createChatRoom(
+  //   roomId: string,
+  //   usernames: string[] | string
+  // ): Promise<string> {
+  //   // await this.chatRoomModel.create({
+  //   //   user :
+  //   // });
+  //   if (Array.isArray(usernames)) {
+  //     usernames.forEach(async (user) => {
+  //       await this.userModel.findOneAndUpdate(
+  //         { username: user },
+  //         { $push: { userRooms: roomId } },
+  //         { new: true }
+  //       );
+  //     });
+  //   } else {
+  //     await this.userModel.findOneAndUpdate(
+  //       { username: usernames },
+  //       { $push: { userRooms: roomId } },
+  //       { new: true }
+  //     );
+  //   }
+
+  //   return roomId;
+  // }
 }
-
-// async createChatRoom(
-//   roomId: string,
-//   usernames: string[] | string
-// ): Promise<string> {
-//   // await this.chatRoomModel.create({
-//   //   user :
-//   // });
-//   if (Array.isArray(usernames)) {
-//     usernames.forEach(async (user) => {
-//       await this.userModel.findOneAndUpdate(
-//         { username: user },
-//         { $push: { userRooms: roomId } },
-//         { new: true }
-//       );
-//     });
-//   } else {
-//     await this.userModel.findOneAndUpdate(
-//       { username: usernames },
-//       { $push: { userRooms: roomId } },
-//       { new: true }
-//     );
-//   }
-
-//   return roomId;
-// }

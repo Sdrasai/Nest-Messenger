@@ -21,19 +21,12 @@ const common_1 = require("@nestjs/common");
 const jwt_1 = require("@nestjs/jwt");
 const users_service_1 = require("../users/users.service");
 const uuid_1 = require("uuid");
-<<<<<<< HEAD
 const chat_rooms_service_1 = require("../chat-rooms/chat-rooms.service");
 let MessagesGateway = MessagesGateway_1 = class MessagesGateway {
     constructor(messagesService, userService, chatRoomService, jwtService) {
         this.messagesService = messagesService;
         this.userService = userService;
         this.chatRoomService = chatRoomService;
-=======
-let MessagesGateway = MessagesGateway_1 = class MessagesGateway {
-    constructor(messagesService, userService, jwtService) {
-        this.messagesService = messagesService;
-        this.userService = userService;
->>>>>>> b6929d640e0bcf0a95511571dd80370872452934
         this.jwtService = jwtService;
         this.logger = new common_1.Logger(MessagesGateway_1.name);
     }
@@ -54,15 +47,10 @@ let MessagesGateway = MessagesGateway_1 = class MessagesGateway {
     async message(msg, client) {
         let message = msg.split(":")[1];
         let username = msg.split(": ")[0];
-<<<<<<< HEAD
         let roomId = client.handshake.headers.referer.split("/")[6];
         const user = await this.userService.findByUsername(username);
         const chatRoom = await this.chatRoomService.findByRoomId(roomId);
         await this.messagesService.createMessageService(user, message, chatRoom);
-=======
-        const user = await this.userService.findByUsername(username);
-        await this.messagesService.createMessageService(user, message);
->>>>>>> b6929d640e0bcf0a95511571dd80370872452934
         this.server.emit("chat message", msg);
     }
     istyping(msg, client) {
@@ -75,15 +63,16 @@ let MessagesGateway = MessagesGateway_1 = class MessagesGateway {
         const extractedCookie = client.handshake.headers.cookie;
         const nickName = extractedCookie?.split(";")[1]?.split("=")[1];
         const roomId = (0, uuid_1.v4)();
-<<<<<<< HEAD
         let usersId = [];
         if (Array.isArray(usernames)) {
             usernames.forEach(async (user) => {
                 let users = await this.userService.findByUsername(user);
+                console.log("++++++++++++++++++", users);
                 usersId.push(users._id);
             });
             let mainUser = await this.userService.findByUsername(nickName);
             usersId.push(mainUser._id);
+            console.log("++++++++++++++++++", usersId);
             const roomTarget = await this.chatRoomService.createChatRoom(roomId, usersId);
             usersId = [];
             client.emit("chatRoomCreated", roomTarget);
@@ -97,11 +86,6 @@ let MessagesGateway = MessagesGateway_1 = class MessagesGateway {
             usersId = [];
             client.emit("chatRoomCreated", roomTarget);
         }
-=======
-        await this.userService.createChatRoom(roomId, nickName);
-        const roomTarget = await this.userService.createChatRoom(roomId, usernames);
-        client.emit("chatRoomCreated", roomTarget);
->>>>>>> b6929d640e0bcf0a95511571dd80370872452934
     }
     handleJoinRoom(roomId, client) {
         client.join(roomId);
@@ -163,10 +147,7 @@ exports.MessagesGateway = MessagesGateway = MessagesGateway_1 = __decorate([
     }),
     __metadata("design:paramtypes", [messages_service_1.MessagesService,
         users_service_1.UsersService,
-<<<<<<< HEAD
         chat_rooms_service_1.ChatRoomsService,
-=======
->>>>>>> b6929d640e0bcf0a95511571dd80370872452934
         jwt_1.JwtService])
 ], MessagesGateway);
 //# sourceMappingURL=messages.gateway.js.map
