@@ -28,6 +28,7 @@ export class MessagesGateway {
     private readonly chatRoomService: ChatRoomsService,
     private jwtService: JwtService
   ) {}
+  // connectedUsers = [];
 
   afterInit() {
     this.logger.log("Initialized");
@@ -41,11 +42,34 @@ export class MessagesGateway {
 
     const extractedCookie = client.handshake.headers.cookie;
     const nickName = extractedCookie?.split(";")[1]?.split("=")[1];
+
+    // this.connectedUsers.push(nickName);
+    // this.connectedUsers.push(client.id);
+    // console.log(
+    //   "+++++++++++++++++++++++++++++++++++++++++++++",
+    //   this.connectedUsers
+    // );
+
+    const user = await this.userService.findByUsername(nickName);
+    const rooms = await this.chatRoomService.getChatRooms(user._id);
+    rooms.forEach((room) => {
+      client.join(room.chatRoomId);
+    });
+    console.log(`++++++++++++++++++++++${nickName}`, client.rooms);
     client.emit("connected-user", nickName);
   }
 
   handleDisconnect(client: any) {
+    const extractedCookie = client.handshake.headers.cookie;
+    const nickName = extractedCookie?.split(";")[1]?.split("=")[1];
+
     this.logger.log(`Cliend id:${client.id} disconnected`);
+
+    // let findDisconnectedSocketNickName = this.connectedUsers.indexOf(nickName);
+    // this.connectedUsers.splice(findDisconnectedSocketNickName, 1);
+
+    // let findDisconnectedSocketId = this.connectedUsers.indexOf(client.id);
+    // this.connectedUsers.splice(findDisconnectedSocketId, 1);
   }
 
   @SubscribeMessage("chat message")
@@ -89,20 +113,39 @@ export class MessagesGateway {
     if (Array.isArray(usernames)) {
       usernames.forEach(async (user) => {
         let users = await this.userService.findByUsername(user);
-        console.log("++++++++++++++++++", users);
-
         usersId.push(users._id);
       });
       let mainUser = await this.userService.findByUsername(nickName);
       usersId.push(mainUser._id);
 
       // await this.chatRoomService.createChatRoom(roomId, nickName);
-      console.log("++++++++++++++++++", usersId);
-
       const roomTarget = await this.chatRoomService.createChatRoom(
         roomId,
         usersId
       );
+
+      // console.log(
+      //   "-------------------------------------",
+      //   this.server.sockets.sockets.get(this.connectedUsers[0])
+      // );
+      // client.join(roomTarget);
+      // usernames.forEach(async (user) => {
+      //   if (this.connectedUsers.includes(user)) {
+      //     let findIndexSocket = this.connectedUsers.indexOf(user);
+      //     this.server.sockets.sockets
+      //       .get(this.connectedUsers[findIndexSocket + 1])
+      //       .join(roomTarget);
+      //     console.log(
+      //       "******************************************",
+      //       this.server.sockets.sockets.get(
+      //         this.connectedUsers[findIndexSocket + 1]
+      //       )
+      //     );
+      //   }
+      // });
+
+      // console.log("******************************************", client.rooms);
+
       usersId = []; // ?
       client.emit("chatRoomCreated", roomTarget); // Emit the room ID back to the client
     } else {

@@ -30,6 +30,7 @@
       });
 
       socket.on("chatRoomCreated", (roomId) => {
+        
         window.location.href = `/api/v1/chat/${roomId}`; // Redirect to the chat room page
       });
     </script>
