@@ -9,8 +9,11 @@ import { AuthGuard } from "./common/guards/auth.guard";
 
 import { MessagesModule } from "./messages/messages.module";
 import { SocketAuthGuardMiddleware } from "./middlewares/messenger.middleware";
+import { ServeStaticModule } from "@nestjs/serve-static";
+import { join } from "path";
 // import { Message, messageSchema } from "./messages/entities/message.entity";
 // import { Connection } from "mongoose";
+import { ChatRoomsModule } from './chat-rooms/chat-rooms.module';
 // import * as AutoIncrementFactory from "mongoose-sequence";
 
 @Module({
@@ -30,7 +33,14 @@ import { SocketAuthGuardMiddleware } from "./middlewares/messenger.middleware";
     //     inject: [getConnectionToken("mongodb://mongodb:27017/Messenger")],
     //   },
     // ]),
+    ServeStaticModule.forRoot({
+      serveRoot: "/api/v1/chat",
+      rootPath: join(__dirname, "../../../src", "client"),
+    }),
+
     MessagesModule,
+
+    ChatRoomsModule,
   ],
   controllers: [AppController],
   providers: [

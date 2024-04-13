@@ -6,12 +6,12 @@ import {
   ConnectedSocket,
 } from "@nestjs/websockets";
 import { MessagesService } from "./messages.service";
-
 import { Server, Socket } from "socket.io";
-import { Logger, Req } from "@nestjs/common";
-import { Request } from "express";
+import { Logger, Param } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
-import { SECRET_KEY } from "src/common/constants/auth.constants";
+import { UsersService } from "src/users/users.service";
+import { v4 as uuidv4 } from "uuid";
+import { ChatRoomsService } from "src/chat-rooms/chat-rooms.service";
 
 @WebSocketGateway({
   cors: {
@@ -24,8 +24,11 @@ export class MessagesGateway {
   private readonly logger = new Logger(MessagesGateway.name);
   constructor(
     private readonly messagesService: MessagesService,
+    private readonly userService: UsersService,
+    private readonly chatRoomService: ChatRoomsService,
     private jwtService: JwtService
   ) {}
+  // connectedUsers = [];
 
   afterInit() {
     this.logger.log("Initialized");
@@ -34,56 +37,58 @@ export class MessagesGateway {
   async handleConnection(client: any, ...args: any[]) {
     const { sockets } = this.server.sockets;
 
-    this.logger.log(`Client id: ${client.id} connected`);
+    this.logger.log(`client id: ${client.id} connected`);
     this.logger.debug(`Number of connected clients: ${sockets.size}`);
 
-    // //use the middleware
-    // const extractedCookie = client.handshake.headers.cookie;
-    // const accessToken = extractedCookie.split("=")[1];
-    // const payload = await this.jwtService.verifyAsync(accessToken, {
-    //   secret: SECRET_KEY,
-    // });
-
-    // // this.userMap.set(client.id, payload);
-    // // console.log("+++++++++++++++++++++++++", this.userMap.get(client.id));
-    // // this.server.emit("connected-user", this.userMap.get(client.id).username);
-
-    // sockets.get(client.id)["user"] = payload;
-    // console.log("+++++++++++++++++++++++++", sockets.get(client.id)["user"]);
-    // client.emit("connected-user", sockets.get(client.id)["user"].username);
-
     const extractedCookie = client.handshake.headers.cookie;
-    const nickName = extractedCookie.split(";")[1].split("=")[1];
+    const nickName = extractedCookie?.split(";")[1]?.split("=")[1];
+
+    // this.connectedUsers.push(nickName);
+    // this.connectedUsers.push(client.id);
+    // console.log(
+    //   "+++++++++++++++++++++++++++++++++++++++++++++",
+    //   this.connectedUsers
+    // );
+
+    const user = await this.userService.findByUsername(nickName);
+    const rooms = await this.chatRoomService.getChatRooms(user._id);
+    rooms.forEach((room) => {
+      client.join(room.chatRoomId);
+    });
+    console.log(`++++++++++++++++++++++${nickName}`, client.rooms);
     client.emit("connected-user", nickName);
   }
 
   handleDisconnect(client: any) {
+    const extractedCookie = client.handshake.headers.cookie;
+    const nickName = extractedCookie?.split(";")[1]?.split("=")[1];
+
     this.logger.log(`Cliend id:${client.id} disconnected`);
+
+    // let findDisconnectedSocketNickName = this.connectedUsers.indexOf(nickName);
+    // this.connectedUsers.splice(findDisconnectedSocketNickName, 1);
+
+    // let findDisconnectedSocketId = this.connectedUsers.indexOf(client.id);
+    // this.connectedUsers.splice(findDisconnectedSocketId, 1);
   }
 
   @SubscribeMessage("chat message")
-  async message(@MessageBody() msg: any, @ConnectedSocket() client: Socket) {
+  async message(
+    @MessageBody() msg: any,
+    @ConnectedSocket() client: Socket
+    // @Param("roomId") roomId: string
+  ) {
+    let message = msg.split(":")[1];
+    let username = msg.split(": ")[0];
+    let roomId = client.handshake.headers.referer.split("/")[6];
+
+    const user = await this.userService.findByUsername(username);
+    const chatRoom = await this.chatRoomService.findByRoomId(roomId);
+    await this.messagesService.createMessageService(user, message, chatRoom);
+
+    //TODO: create Room in Socket + emit the msg in Room
     this.server.emit("chat message", msg);
   }
-
-  // socket.on("chat message", async (msg, clientOffset) => {
-  //   let result;
-  //   try {
-  //     result = await db.run(
-  //       "INSERT INTO messages (content, client_offset) VALUES (?, ?)",
-  //       msg,
-  //       clientOffset
-  //     );
-  //   } catch (e) {
-  //     if (e.errno === 19 /* SQLITE_CONSTRAINT */) {
-  //       callback();
-  //     } else {
-  //       // nothing to do, just let the client retry
-  //     }
-  //     return;
-  //   }
-  //   io.emit("chat message", msg, result.lastID);
-  // });
 
   @SubscribeMessage("typing")
   istyping(@MessageBody() msg: any, @ConnectedSocket() client: Socket) {
@@ -94,30 +99,80 @@ export class MessagesGateway {
   isNotTyping(@MessageBody() msg: any, @ConnectedSocket() client: Socket) {
     client.broadcast.emit("stop typing", "");
   }
+
+  @SubscribeMessage("createChatRoom")
+  async handleCreateChatRoom(
+    @MessageBody() usernames: string[],
+    @ConnectedSocket() client: Socket
+  ): Promise<void> {
+    const extractedCookie = client.handshake.headers.cookie;
+    const nickName = extractedCookie?.split(";")[1]?.split("=")[1];
+    const roomId = uuidv4();
+    let usersId = [];
+
+    if (Array.isArray(usernames)) {
+      usernames.forEach(async (user) => {
+        let users = await this.userService.findByUsername(user);
+        usersId.push(users._id);
+      });
+      let mainUser = await this.userService.findByUsername(nickName);
+      usersId.push(mainUser._id);
+
+      // await this.chatRoomService.createChatRoom(roomId, nickName);
+      const roomTarget = await this.chatRoomService.createChatRoom(
+        roomId,
+        usersId
+      );
+
+      // console.log(
+      //   "-------------------------------------",
+      //   this.server.sockets.sockets.get(this.connectedUsers[0])
+      // );
+      // client.join(roomTarget);
+      // usernames.forEach(async (user) => {
+      //   if (this.connectedUsers.includes(user)) {
+      //     let findIndexSocket = this.connectedUsers.indexOf(user);
+      //     this.server.sockets.sockets
+      //       .get(this.connectedUsers[findIndexSocket + 1])
+      //       .join(roomTarget);
+      //     console.log(
+      //       "******************************************",
+      //       this.server.sockets.sockets.get(
+      //         this.connectedUsers[findIndexSocket + 1]
+      //       )
+      //     );
+      //   }
+      // });
+
+      // console.log("******************************************", client.rooms);
+
+      usersId = []; // ?
+      client.emit("chatRoomCreated", roomTarget); // Emit the room ID back to the client
+    } else {
+      let users = await this.userService.findByUsername(usernames);
+      usersId.push(users._id);
+      let mainUser = await this.userService.findByUsername(nickName);
+      usersId.push(mainUser._id);
+      // await this.chatRoomService.createChatRoom(roomId, nickName);
+
+      const roomTarget = await this.chatRoomService.createChatRoom(
+        roomId,
+        usersId
+      );
+      usersId = []; // ?
+      client.emit("chatRoomCreated", roomTarget); // Emit the room ID back to the client
+    }
+  }
+
+  @SubscribeMessage("joinRoom")
+  handleJoinRoom(
+    @MessageBody() roomId: string,
+    @ConnectedSocket() client: Socket
+  ): void {
+    client.join(roomId); // Join the client to the specified room
+  }
+
+  sendMessageToRoom(roomId: string, message: string): void {
+    this.server.to(roomId).emit("message", message); // Broadcast the message to all users in the room
+  }
 }
-
-// @SubscribeMessage('test')
-// test1(socket, next) {
-//   console.log(socket.id)
-// }
-
-// @SubscribeMessage('createMessage')
-// async createMessage(@MessageBody() createMessageDto: CreateMessageDto) {
-//   const message =
-//     await this.messagesService.createMessageService(createMessageDto)
-//   this.server.emit('message', message)
-//   return message
-// }
-
-// @SubscribeMessage('findAllMessages')
-// findAll() {
-//   return this.messagesService.findAllService()
-// }
-
-// // @SubscribeMessage('join')
-// // joinRoom(
-// //   @MessageBody('username') username: String,
-// //   @ConnectedSocket() client: Socket,
-// // ) {
-// //   return this.messagesService.identify(username, client.id)
-// // }
