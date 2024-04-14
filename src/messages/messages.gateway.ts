@@ -28,7 +28,7 @@ export class MessagesGateway {
     private readonly chatRoomService: ChatRoomsService,
     private jwtService: JwtService
   ) {}
-  // connectedUsers = [];
+  connectedUsers = [];
 
   afterInit() {
     this.logger.log("Initialized");
@@ -43,20 +43,43 @@ export class MessagesGateway {
     const extractedCookie = client.handshake.headers.cookie;
     const nickName = extractedCookie?.split(";")[1]?.split("=")[1];
 
-    // this.connectedUsers.push(nickName);
-    // this.connectedUsers.push(client.id);
+    this.connectedUsers.push(nickName);
+    this.connectedUsers.push(client.id);
     // console.log(
     //   "+++++++++++++++++++++++++++++++++++++++++++++",
     //   this.connectedUsers
     // );
 
-    const user = await this.userService.findByUsername(nickName);
-    const rooms = await this.chatRoomService.getChatRooms(user._id);
-    rooms.forEach((room) => {
-      client.join(room.chatRoomId);
-    });
-    console.log(`++++++++++++++++++++++${nickName}`, client.rooms);
-    client.emit("connected-user", nickName);
+    let clientRoomsSet = new Set();
+    let counter = 0;
+
+    setInterval(async () => {
+      if (this.connectedUsers.includes(nickName)) {
+        let user = await this.userService.findByUsername(nickName);
+        let rooms = await this.chatRoomService.getChatRooms(user._id);
+
+        for (const room of client.rooms) {
+          console.log(`counter In forEach = ${++counter}`);
+          clientRoomsSet.add(room);
+        }
+        // console.log(`&&&&&&&&&&&&&&&&&&&&&&&${nickName}`, clientRoomsSet);
+
+        rooms.forEach((room) => {
+          if (!clientRoomsSet.has(room.chatRoomId)) {
+            client.join(room.chatRoomId);
+          }
+        });
+
+        // rooms.forEach((room) => {
+        //   if (!client.rooms.has(room.chatRoomId)) {
+        //     client.join(room.chatRoomId);
+        //   }
+        // });
+
+        console.log(`++++++++++++++++++++++${nickName}`, client.rooms);
+        client.emit("connected-user", nickName);
+      }
+    }, 3000);
   }
 
   handleDisconnect(client: any) {
@@ -65,11 +88,11 @@ export class MessagesGateway {
 
     this.logger.log(`Cliend id:${client.id} disconnected`);
 
-    // let findDisconnectedSocketNickName = this.connectedUsers.indexOf(nickName);
-    // this.connectedUsers.splice(findDisconnectedSocketNickName, 1);
+    let findDisconnectedSocketNickName = this.connectedUsers.indexOf(nickName);
+    this.connectedUsers.splice(findDisconnectedSocketNickName, 1);
 
-    // let findDisconnectedSocketId = this.connectedUsers.indexOf(client.id);
-    // this.connectedUsers.splice(findDisconnectedSocketId, 1);
+    let findDisconnectedSocketId = this.connectedUsers.indexOf(client.id);
+    this.connectedUsers.splice(findDisconnectedSocketId, 1);
   }
 
   @SubscribeMessage("chat message")
