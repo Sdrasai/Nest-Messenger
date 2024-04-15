@@ -28,6 +28,7 @@ export class MessagesGateway {
     private readonly chatRoomService: ChatRoomsService,
     private jwtService: JwtService
   ) {}
+  connectedUsers = [];
 
   afterInit() {
     this.logger.log("Initialized");
@@ -41,11 +42,69 @@ export class MessagesGateway {
 
     const extractedCookie = client.handshake.headers.cookie;
     const nickName = extractedCookie?.split(";")[1]?.split("=")[1];
+    let roomId = client.handshake.headers.referer.split("/")[6];
+
+    this.connectedUsers.push(nickName);
+    this.connectedUsers.push(client.id);
+
+    // console.log(
+    //   "+++++++++++++++++++++++++++++++++++++++++++++",
+    //   this.connectedUsers
+    // );
+
+    // let clientRoomsSet = new Set();
+    // let counter = 0;
+
+    // setInterval(async () => {
+    //   if (this.connectedUsers.includes(nickName)) {
+    //     let user = await this.userService.findByUsername(nickName);
+    //     let rooms = await this.chatRoomService.getChatRooms(user._id);
+
+    //     for (const room of client.rooms) {
+    //       // console.log(`counter In forEach = ${++counter}`);
+    //       clientRoomsSet.add(room);
+    //     }
+    //     // console.log(`&&&&&&&&&&&&&&&&&&&&&&&${nickName}`, clientRoomsSet);
+
+    //     rooms.forEach((room) => {
+    //       if (!clientRoomsSet.has(room.chatRoomId)) {
+    //         client.join(room.chatRoomId);
+    //       }
+    //     });
+
+    //     // rooms.forEach((room) => {
+    //     //   if (!client.rooms.has(room.chatRoomId)) {
+    //     //     client.join(room.chatRoomId);
+    //     //   }
+    //     // });
+
+    //     console.log(`++++++++++++++++++++++${nickName}`, client.rooms);
+    //     client.emit("connected-user", nickName);
+    //   }
+    // }, 3000);
+
     client.emit("connected-user", nickName);
+    client.on("disconnecting", () => {
+      client.rooms.forEach((room) => {
+        client.leave(room);
+      });
+      console.log(client.rooms); // the Set contains at least the socket ID
+    });
+    client.join(roomId);
+    console.log(`++++++++++++++++++++++${nickName}`, client.rooms);
   }
 
   handleDisconnect(client: any) {
+    const extractedCookie = client.handshake.headers.cookie;
+    const nickName = extractedCookie?.split(";")[1]?.split("=")[1];
+
     this.logger.log(`Cliend id:${client.id} disconnected`);
+
+    let findDisconnectedSocketNickName = this.connectedUsers.indexOf(nickName);
+    this.connectedUsers.splice(findDisconnectedSocketNickName, 1);
+
+    let findDisconnectedSocketId = this.connectedUsers.indexOf(client.id);
+    this.connectedUsers.splice(findDisconnectedSocketId, 1);
   }
 
   @SubscribeMessage("chat message")
@@ -60,20 +119,36 @@ export class MessagesGateway {
 
     const user = await this.userService.findByUsername(username);
     const chatRoom = await this.chatRoomService.findByRoomId(roomId);
-    await this.messagesService.createMessageService(user, message, chatRoom);
 
-    //TODO: create Room in Socket + emit the msg in Room
-    this.server.emit("chat message", msg);
+    if (roomId == "public") {
+      await this.messagesService.createMessageService(user, message, "Public");
+      this.server.to("public").emit("chat message", msg);
+    } else {
+      await this.messagesService.createMessageService(user, message, chatRoom);
+      this.server.to(roomId).emit("chat message", msg);
+    }
   }
 
   @SubscribeMessage("typing")
   istyping(@MessageBody() msg: any, @ConnectedSocket() client: Socket) {
-    client.broadcast.emit("typing", msg);
+    let roomId = client.handshake.headers.referer.split("/")[6];
+
+    if (roomId == "public") {
+      client.broadcast.to("public").emit("typing", msg);
+    } else {
+      client.broadcast.to(roomId).emit("typing", msg);
+    }
   }
 
   @SubscribeMessage("stop typing")
   isNotTyping(@MessageBody() msg: any, @ConnectedSocket() client: Socket) {
-    client.broadcast.emit("stop typing", "");
+    let roomId = client.handshake.headers.referer.split("/")[6];
+
+    if (roomId == "public") {
+      client.broadcast.to("public").emit("stop typing", "");
+    } else {
+      client.broadcast.to(roomId).emit("stop typing", "");
+    }
   }
 
   @SubscribeMessage("createChatRoom")
@@ -89,20 +164,39 @@ export class MessagesGateway {
     if (Array.isArray(usernames)) {
       usernames.forEach(async (user) => {
         let users = await this.userService.findByUsername(user);
-        console.log("++++++++++++++++++", users);
-
         usersId.push(users._id);
       });
       let mainUser = await this.userService.findByUsername(nickName);
       usersId.push(mainUser._id);
 
       // await this.chatRoomService.createChatRoom(roomId, nickName);
-      console.log("++++++++++++++++++", usersId);
-
       const roomTarget = await this.chatRoomService.createChatRoom(
         roomId,
         usersId
       );
+
+      // console.log(
+      //   "-------------------------------------",
+      //   this.server.sockets.sockets.get(this.connectedUsers[0])
+      // );
+      // client.join(roomTarget);
+      // usernames.forEach(async (user) => {
+      //   if (this.connectedUsers.includes(user)) {
+      //     let findIndexSocket = this.connectedUsers.indexOf(user);
+      //     this.server.sockets.sockets
+      //       .get(this.connectedUsers[findIndexSocket + 1])
+      //       .join(roomTarget);
+      //     console.log(
+      //       "******************************************",
+      //       this.server.sockets.sockets.get(
+      //         this.connectedUsers[findIndexSocket + 1]
+      //       )
+      //     );
+      //   }
+      // });
+
+      // console.log("******************************************", client.rooms);
+
       usersId = []; // ?
       client.emit("chatRoomCreated", roomTarget); // Emit the room ID back to the client
     } else {
@@ -121,15 +215,15 @@ export class MessagesGateway {
     }
   }
 
-  @SubscribeMessage("joinRoom")
-  handleJoinRoom(
-    @MessageBody() roomId: string,
-    @ConnectedSocket() client: Socket
-  ): void {
-    client.join(roomId); // Join the client to the specified room
-  }
+  // @SubscribeMessage("joinRoom")
+  // handleJoinRoom(
+  //   @MessageBody() roomId: string,
+  //   @ConnectedSocket() client: Socket
+  // ): void {
+  //   client.join(roomId); // Join the client to the specified room
+  // }
 
-  sendMessageToRoom(roomId: string, message: string): void {
-    this.server.to(roomId).emit("message", message); // Broadcast the message to all users in the room
-  }
+  // sendMessageToRoom(roomId: string, message: string): void {
+  //   this.server.to(roomId).emit("message", message); // Broadcast the message to all users in the room
+  // }
 }
