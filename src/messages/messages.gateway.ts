@@ -42,44 +42,56 @@ export class MessagesGateway {
 
     const extractedCookie = client.handshake.headers.cookie;
     const nickName = extractedCookie?.split(";")[1]?.split("=")[1];
+    let roomId = client.handshake.headers.referer.split("/")[6];
 
     this.connectedUsers.push(nickName);
     this.connectedUsers.push(client.id);
+
     // console.log(
     //   "+++++++++++++++++++++++++++++++++++++++++++++",
     //   this.connectedUsers
     // );
 
-    let clientRoomsSet = new Set();
-    let counter = 0;
+    // let clientRoomsSet = new Set();
+    // let counter = 0;
 
-    setInterval(async () => {
-      if (this.connectedUsers.includes(nickName)) {
-        let user = await this.userService.findByUsername(nickName);
-        let rooms = await this.chatRoomService.getChatRooms(user._id);
+    // setInterval(async () => {
+    //   if (this.connectedUsers.includes(nickName)) {
+    //     let user = await this.userService.findByUsername(nickName);
+    //     let rooms = await this.chatRoomService.getChatRooms(user._id);
 
-        for (const room of client.rooms) {
-          // console.log(`counter In forEach = ${++counter}`);
-          clientRoomsSet.add(room);
-        }
-        // console.log(`&&&&&&&&&&&&&&&&&&&&&&&${nickName}`, clientRoomsSet);
+    //     for (const room of client.rooms) {
+    //       // console.log(`counter In forEach = ${++counter}`);
+    //       clientRoomsSet.add(room);
+    //     }
+    //     // console.log(`&&&&&&&&&&&&&&&&&&&&&&&${nickName}`, clientRoomsSet);
 
-        rooms.forEach((room) => {
-          if (!clientRoomsSet.has(room.chatRoomId)) {
-            client.join(room.chatRoomId);
-          }
-        });
+    //     rooms.forEach((room) => {
+    //       if (!clientRoomsSet.has(room.chatRoomId)) {
+    //         client.join(room.chatRoomId);
+    //       }
+    //     });
 
-        // rooms.forEach((room) => {
-        //   if (!client.rooms.has(room.chatRoomId)) {
-        //     client.join(room.chatRoomId);
-        //   }
-        // });
+    //     // rooms.forEach((room) => {
+    //     //   if (!client.rooms.has(room.chatRoomId)) {
+    //     //     client.join(room.chatRoomId);
+    //     //   }
+    //     // });
 
-        // console.log(`++++++++++++++++++++++${nickName}`, client.rooms);
-        client.emit("connected-user", nickName);
-      }
-    }, 3000);
+    //     console.log(`++++++++++++++++++++++${nickName}`, client.rooms);
+    //     client.emit("connected-user", nickName);
+    //   }
+    // }, 3000);
+
+    client.emit("connected-user", nickName);
+    client.on("disconnecting", () => {
+      client.rooms.forEach((room) => {
+        client.leave(room);
+      });
+      console.log(client.rooms); // the Set contains at least the socket ID
+    });
+    client.join(roomId);
+    console.log(`++++++++++++++++++++++${nickName}`, client.rooms);
   }
 
   handleDisconnect(client: any) {
@@ -108,9 +120,9 @@ export class MessagesGateway {
     const user = await this.userService.findByUsername(username);
     const chatRoom = await this.chatRoomService.findByRoomId(roomId);
 
-    if (!roomId) {
+    if (roomId == "public") {
       await this.messagesService.createMessageService(user, message, "Public");
-      this.server.emit("chat message", msg);
+      this.server.to("public").emit("chat message", msg);
     } else {
       await this.messagesService.createMessageService(user, message, chatRoom);
       this.server.to(roomId).emit("chat message", msg);
@@ -121,8 +133,8 @@ export class MessagesGateway {
   istyping(@MessageBody() msg: any, @ConnectedSocket() client: Socket) {
     let roomId = client.handshake.headers.referer.split("/")[6];
 
-    if (!roomId) {
-      client.broadcast.emit("typing", msg);
+    if (roomId == "public") {
+      client.broadcast.to("public").emit("typing", msg);
     } else {
       client.broadcast.to(roomId).emit("typing", msg);
     }
@@ -132,8 +144,8 @@ export class MessagesGateway {
   isNotTyping(@MessageBody() msg: any, @ConnectedSocket() client: Socket) {
     let roomId = client.handshake.headers.referer.split("/")[6];
 
-    if (!roomId) {
-      client.broadcast.emit("stop typing", "");
+    if (roomId == "public") {
+      client.broadcast.to("public").emit("stop typing", "");
     } else {
       client.broadcast.to(roomId).emit("stop typing", "");
     }
