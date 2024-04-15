@@ -17,25 +17,9 @@ export class ChatRoomsService {
     return chatRoom;
   }
 
-  // create(createChatRoomDto: CreateChatRoomDto) {
-  //   return "This action adds a new chatRoom";
-  // }
-
-  // findAll() {
-  //   return `This action returns all chatRooms`;
-  // }
-
-  // findOne(id: number) {
-  //   return `This action returns a #${id} chatRoom`;
-  // }
-
-  // update(id: number, updateChatRoomDto: UpdateChatRoomDto) {
-  //   return `This action updates a #${id} chatRoom`;
-  // }
-
-  // remove(id: number) {
-  //   return `This action removes a #${id} chatRoom`;
-  // }
+  async getChatRooms(userId: string): Promise<ChatRooms[]> {
+    return this.chatRoomModel.find({ user: userId }).populate("user");
+  }
 
   async createChatRoom(
     roomId: string,
@@ -57,6 +41,7 @@ export class ChatRoomsService {
         return checkIfExist1.chatRoomId;
       }
     }
+    //TODO: handle if usernames.length === 1
     await this.chatRoomModel.create({
       user: usernames,
       chatRoomId: roomId,
