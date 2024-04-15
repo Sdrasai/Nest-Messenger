@@ -25,6 +25,9 @@ let ChatRoomsService = class ChatRoomsService {
         const chatRoom = await this.chatRoomModel.findOne({ chatRoomId: roomId });
         return chatRoom;
     }
+    async getChatRooms(userId) {
+        return this.chatRoomModel.find({ user: userId }).populate("user");
+    }
     async createChatRoom(roomId, usernames) {
         if (usernames.length == 2) {
             const checkIfExist = await this.chatRoomModel.findOne({

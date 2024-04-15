@@ -15,36 +15,12 @@ import { join } from "path";
 // import { Connection } from "mongoose";
 import { ChatRoomsModule } from "./chat-rooms/chat-rooms.module";
 // import * as AutoIncrementFactory from "mongoose-sequence";
-import { ServeStaticModule } from "@nestjs/serve-static";
-import { join } from "path";
-// import { Message, messageSchema } from "./messages/entities/message.entity";
-// import { Connection } from "mongoose";
-import { ChatRoomsModule } from "./chat-rooms/chat-rooms.module";
-// import * as AutoIncrementFactory from "mongoose-sequence";
 
 @Module({
   imports: [
     UsersModule,
     AuthModule,
     MongooseModule.forRoot("mongodb://localhost:27017/Messenger"),
-    // MongooseModule.forFeatureAsync([
-    //   {
-    //     name: Message.name,
-    //     useFactory: async (connection: Connection) => {
-    //       const schema = messageSchema;
-    //       const AutoIncrement = AutoIncrementFactory(connection);
-    //       schema.plugin(AutoIncrement, { inc_field: "id" });
-    //       return schema;
-    //     },
-    //     inject: [getConnectionToken("mongodb://mongodb:27017/Messenger")],
-    //   },
-    // ]),
-    ServeStaticModule.forRoot({
-      serveRoot: "/api/v1/chat",
-      rootPath: join(__dirname, "../../../src", "client"),
-    }),
-
-    MongooseModule.forRoot("mongodb://mongodb:27017/Messenger"),
     // MongooseModule.forFeatureAsync([
     //   {
     //     name: Message.name,

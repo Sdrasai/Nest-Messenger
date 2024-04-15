@@ -22,6 +22,7 @@
 /// <reference types="mongoose/types/validation" />
 /// <reference types="mongoose/types/virtuals" />
 /// <reference types="mongoose/types/inferschematype" />
+import { ChatRooms } from "./schema/chat-room.schema";
 import { Model } from "mongoose";
 import { IChatRooms } from "./chatRoom.interface";
 export declare class ChatRoomsService {
@@ -30,5 +31,6 @@ export declare class ChatRoomsService {
     findByRoomId(roomId: string): Promise<import("mongoose").Document<unknown, {}, IChatRooms> & IChatRooms & {
         _id: import("mongoose").Types.ObjectId;
     }>;
+    getChatRooms(userId: string): Promise<ChatRooms[]>;
     createChatRoom(roomId: string, usernames: string[] | string): Promise<string>;
 }
