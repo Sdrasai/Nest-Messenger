@@ -59,7 +59,7 @@ export class MessagesGateway {
         let rooms = await this.chatRoomService.getChatRooms(user._id);
 
         for (const room of client.rooms) {
-          console.log(`counter In forEach = ${++counter}`);
+          // console.log(`counter In forEach = ${++counter}`);
           clientRoomsSet.add(room);
         }
         // console.log(`&&&&&&&&&&&&&&&&&&&&&&&${nickName}`, clientRoomsSet);
@@ -76,7 +76,7 @@ export class MessagesGateway {
         //   }
         // });
 
-        console.log(`++++++++++++++++++++++${nickName}`, client.rooms);
+        // console.log(`++++++++++++++++++++++${nickName}`, client.rooms);
         client.emit("connected-user", nickName);
       }
     }, 3000);
@@ -107,20 +107,36 @@ export class MessagesGateway {
 
     const user = await this.userService.findByUsername(username);
     const chatRoom = await this.chatRoomService.findByRoomId(roomId);
-    await this.messagesService.createMessageService(user, message, chatRoom);
 
-    //TODO: create Room in Socket + emit the msg in Room
-    this.server.emit("chat message", msg);
+    if (!roomId) {
+      await this.messagesService.createMessageService(user, message, "Public");
+      this.server.emit("chat message", msg);
+    } else {
+      await this.messagesService.createMessageService(user, message, chatRoom);
+      this.server.to(roomId).emit("chat message", msg);
+    }
   }
 
   @SubscribeMessage("typing")
   istyping(@MessageBody() msg: any, @ConnectedSocket() client: Socket) {
-    client.broadcast.emit("typing", msg);
+    let roomId = client.handshake.headers.referer.split("/")[6];
+
+    if (!roomId) {
+      client.broadcast.emit("typing", msg);
+    } else {
+      client.broadcast.to(roomId).emit("typing", msg);
+    }
   }
 
   @SubscribeMessage("stop typing")
   isNotTyping(@MessageBody() msg: any, @ConnectedSocket() client: Socket) {
-    client.broadcast.emit("stop typing", "");
+    let roomId = client.handshake.headers.referer.split("/")[6];
+
+    if (!roomId) {
+      client.broadcast.emit("stop typing", "");
+    } else {
+      client.broadcast.to(roomId).emit("stop typing", "");
+    }
   }
 
   @SubscribeMessage("createChatRoom")
@@ -187,15 +203,15 @@ export class MessagesGateway {
     }
   }
 
-  @SubscribeMessage("joinRoom")
-  handleJoinRoom(
-    @MessageBody() roomId: string,
-    @ConnectedSocket() client: Socket
-  ): void {
-    client.join(roomId); // Join the client to the specified room
-  }
+  // @SubscribeMessage("joinRoom")
+  // handleJoinRoom(
+  //   @MessageBody() roomId: string,
+  //   @ConnectedSocket() client: Socket
+  // ): void {
+  //   client.join(roomId); // Join the client to the specified room
+  // }
 
-  sendMessageToRoom(roomId: string, message: string): void {
-    this.server.to(roomId).emit("message", message); // Broadcast the message to all users in the room
-  }
+  // sendMessageToRoom(roomId: string, message: string): void {
+  //   this.server.to(roomId).emit("message", message); // Broadcast the message to all users in the room
+  // }
 }
