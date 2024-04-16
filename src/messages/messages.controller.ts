@@ -85,13 +85,13 @@ export class messageController {
           secure: process.env.NODE_ENV === "production",
         })
         .status(200)
-        .redirect("chat");
+        .redirect("home");
     } catch (error) {
       console.log(error);
     }
   }
 
-  @Get("chat")
+  @Get("chat/public")
   getIndexChat(
     @Res() res: Response,
     @Req() req: Request,
