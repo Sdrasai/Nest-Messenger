@@ -12,6 +12,7 @@ import { JwtService } from "@nestjs/jwt";
 import { UsersService } from "src/users/users.service";
 import { v4 as uuidv4 } from "uuid";
 import { ChatRoomsService } from "src/chat-rooms/chat-rooms.service";
+import { Types } from "mongoose";
 
 @WebSocketGateway({
   cors: {
@@ -44,44 +45,13 @@ export class MessagesGateway {
     const nickName = extractedCookie?.split(";")[1]?.split("=")[1];
     let roomId = client.handshake.headers.referer.split("/")[6];
 
+    //restoring messages
+    const messages = await this.messagesService.getMessagesForRoom(roomId);
+    console.log("payam ha----> ", messages);
+    this.server.to(roomId).emit("messages", messages);
+
     this.connectedUsers.push(nickName);
     this.connectedUsers.push(client.id);
-
-    // console.log(
-    //   "+++++++++++++++++++++++++++++++++++++++++++++",
-    //   this.connectedUsers
-    // );
-
-    // let clientRoomsSet = new Set();
-    // let counter = 0;
-
-    // setInterval(async () => {
-    //   if (this.connectedUsers.includes(nickName)) {
-    //     let user = await this.userService.findByUsername(nickName);
-    //     let rooms = await this.chatRoomService.getChatRooms(user._id);
-
-    //     for (const room of client.rooms) {
-    //       // console.log(`counter In forEach = ${++counter}`);
-    //       clientRoomsSet.add(room);
-    //     }
-    //     // console.log(`&&&&&&&&&&&&&&&&&&&&&&&${nickName}`, clientRoomsSet);
-
-    //     rooms.forEach((room) => {
-    //       if (!clientRoomsSet.has(room.chatRoomId)) {
-    //         client.join(room.chatRoomId);
-    //       }
-    //     });
-
-    //     // rooms.forEach((room) => {
-    //     //   if (!client.rooms.has(room.chatRoomId)) {
-    //     //     client.join(room.chatRoomId);
-    //     //   }
-    //     // });
-
-    //     console.log(`++++++++++++++++++++++${nickName}`, client.rooms);
-    //     client.emit("connected-user", nickName);
-    //   }
-    // }, 3000);
 
     client.emit("connected-user", nickName);
     client.on("disconnecting", () => {
@@ -93,6 +63,14 @@ export class MessagesGateway {
     client.join(roomId);
     console.log(`++++++++++++++++++++++${nickName}`, client.rooms);
   }
+  // async handleRoomJoin(roomId: Types.ObjectId) {
+  //   try {
+  //     const messages = await this.messagesService.getMessagesForRoom(roomId);
+  //     // Send messages over WebSocket to the client who joined the room
+  //     this.server.to(roomId.toString()).emit('messages', messages);
+  //   } catch (error) {
+  //     console.error('Error handling room join:', error);
+  //   }
 
   handleDisconnect(client: any) {
     const extractedCookie = client.handshake.headers.cookie;

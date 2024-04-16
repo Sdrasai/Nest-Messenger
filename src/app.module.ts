@@ -57,7 +57,7 @@ export class AppModule implements NestModule {
     consumer
       .apply(SocketAuthGuardMiddleware)
       .exclude("api/v1/login")
-      .forRoutes("*");
+      .forRoutes("api/v1/chat/public", "api/v1/home", "api/v1/chat/*");
   }
 }
 // export class AppModule {}
