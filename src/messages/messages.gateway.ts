@@ -12,7 +12,6 @@ import { JwtService } from "@nestjs/jwt";
 import { UsersService } from "src/users/users.service";
 import { v4 as uuidv4 } from "uuid";
 import { ChatRoomsService } from "src/chat-rooms/chat-rooms.service";
-import { Types } from "mongoose";
 
 @WebSocketGateway({
   cors: {
@@ -163,28 +162,6 @@ export class MessagesGateway {
         roomId,
         usersId
       );
-
-      // console.log(
-      //   "-------------------------------------",
-      //   this.server.sockets.sockets.get(this.connectedUsers[0])
-      // );
-      // client.join(roomTarget);
-      // usernames.forEach(async (user) => {
-      //   if (this.connectedUsers.includes(user)) {
-      //     let findIndexSocket = this.connectedUsers.indexOf(user);
-      //     this.server.sockets.sockets
-      //       .get(this.connectedUsers[findIndexSocket + 1])
-      //       .join(roomTarget);
-      //     console.log(
-      //       "******************************************",
-      //       this.server.sockets.sockets.get(
-      //         this.connectedUsers[findIndexSocket + 1]
-      //       )
-      //     );
-      //   }
-      // });
-
-      // console.log("******************************************", client.rooms);
 
       usersId = []; // ?
       client.emit("chatRoomCreated", roomTarget); // Emit the room ID back to the client
