@@ -1,0 +1,37 @@
+body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+}
+
+.container {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 20px;
+}
+
+.conversation-box {
+        background-color: #f0f0f0;
+        border-radius: 8px;
+        padding: 20px;
+        margin-bottom: 20px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+}
+
+.conversation-box:hover {
+        background-color: #e0e0e0;
+}
+
+.chat-room-box {
+        background-color: #f0f0f0;
+        border-radius: 8px;
+        padding: 20px;
+        margin-bottom: 20px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+}
+
+.chat-room-box:hover {
+        background-color: #e0e0e0;
+}

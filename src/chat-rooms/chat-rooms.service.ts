@@ -48,4 +48,15 @@ export class ChatRoomsService {
     });
     return roomId;
   }
+
+  async getAvailableChatRooms(): Promise<any[]> {
+    // Logic to fetch available chat rooms
+    try {
+      const availableChatRooms = await this.chatRoomModel.find().exec();
+      return availableChatRooms;
+    } catch (error) {
+      console.error("Error fetching available chat rooms:", error);
+      throw error;
+    }
+  }
 }

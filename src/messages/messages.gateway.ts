@@ -45,7 +45,17 @@ export class MessagesGateway {
     const nickName = extractedCookie?.split(";")[1]?.split("=")[1];
     let roomId = client.handshake.headers.referer.split("/")[6];
 
-    //restoring messages
+    // Emit event for recent conversations
+    const recentConversations =
+      await this.messagesService.getRecentConversationsForUser(nickName);
+    client.emit("recentConversations", recentConversations);
+
+    // Emit event for available chat rooms
+    const availableChatRooms =
+      await this.chatRoomService.getAvailableChatRooms();
+    client.emit("availableChatRooms", availableChatRooms);
+
+    // Restoring messages
     const messages = await this.messagesService.getMessagesForRoom(roomId);
     console.log("payam ha----> ", messages);
     this.server.to(roomId).emit("messages", messages);
@@ -63,6 +73,7 @@ export class MessagesGateway {
     client.join(roomId);
     console.log(`++++++++++++++++++++++${nickName}`, client.rooms);
   }
+
   // async handleRoomJoin(roomId: Types.ObjectId) {
   //   try {
   //     const messages = await this.messagesService.getMessagesForRoom(roomId);

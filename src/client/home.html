@@ -1,38 +1,90 @@
 <!doctype html>
-<html>
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Main Page</title>
+    <title>Dashboard</title>
+    <link rel="stylesheet" type="text/css" href="/homeStyles.css" />
+    <!-- Link to external CSS file -->
   </head>
   <body>
-    <h1>Welcome to the Chat App</h1>
-    <input
-      type="text"
-      id="usernames"
-      placeholder="Enter usernames (comma-separated)"
-    />
-    <button onclick="createChatRoom()">Create Chat Room</button>
-    <section id="chatrooms"></section>
+    <div class="container">
+      <h1>Dashboard</h1>
+
+      <!-- Section to display all conversations -->
+      <section id="allConversations">
+        <h2>All Conversations</h2>
+        <div id="conversationList">
+          <!-- Conversations will be dynamically added here -->
+        </div>
+      </section>
+
+      <!-- Section to display available chat rooms -->
+      <section id="availableChatRooms">
+        <h2>Available Chat Rooms</h2>
+        <div id="chatRoomList">
+          <!-- Chat rooms will be dynamically added here -->
+        </div>
+      </section>
+    </div>
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.3.1/socket.io.js"></script>
     <script>
       const socket = io("ws://localhost:3000");
 
-      function createChatRoom() {
-        const usernames = document.getElementById("usernames").value.split(",");
-        console.log(usernames);
-        socket.emit("createChatRoom", usernames, (roomId) => {
-          window.location.href = `/api/v1/chat/${roomId}`; // Redirect to the chat room page
+      // Function to render all conversations
+      function renderAllConversations(conversations) {
+        const conversationList = document.getElementById("conversationList");
+        conversationList.innerHTML = ""; // Clear existing list
+        conversations.forEach((conversation) => {
+          const conversationBox = document.createElement("div");
+          conversationBox.classList.add("conversation-box");
+          conversationBox.textContent = conversation.users.join(", "); // Display users in the conversation
+          conversationBox.addEventListener("click", () => {
+            // Redirect to chat room page or handle conversation click
+            console.log(
+              `Clicked conversation with ${conversation.users.join(", ")}`
+            );
+          });
+          conversationList.appendChild(conversationBox);
         });
       }
-      //list - form - refresh the htlm send the br tag into this html page
-      socket.on("connect", () => {
-        console.log("Connected to WebSocket server");
-      });
 
-      socket.on("chatRoomCreated", (roomId) => {
-        window.location.href = `/api/v1/chat/${roomId}`; // Redirect to the chat room page
-      });
+      // Function to render chat rooms (unchanged)
+      function renderChatRooms(chatRooms) {
+        const chatRoomList = document.getElementById("chatRoomList");
+        chatRoomList.innerHTML = ""; // Clear existing list
+        chatRooms.forEach((chatRoom) => {
+          const chatRoomBox = document.createElement("div");
+          chatRoomBox.classList.add("chat-room-box");
+          chatRoomBox.textContent = chatRoom.name; // Replace 'name' with the property containing chat room information
+          chatRoomBox.addEventListener("click", () => {
+            // Redirect to chat room page or handle chat room click
+            console.log(`Clicked chat room ${chatRoom.name}`);
+          });
+          chatRoomList.appendChild(chatRoomBox);
+        });
+      }
+
+      // Example data for all conversations and available chat rooms
+      const allConversations = [
+        { id: 1, users: ["User1", "User2"] },
+        { id: 2, users: ["User2", "User3"] },
+        { id: 3, users: ["User1", "User3"] },
+        // Add more conversation data as needed
+      ];
+
+      const availableChatRooms = [
+        { id: 101, name: "Room 1" },
+        { id: 102, name: "Room 2" },
+        { id: 103, name: "Room 3" },
+      ];
+
+      // Render all conversations and available chat rooms on page load
+      window.onload = () => {
+        renderAllConversations(allConversations);
+        renderChatRooms(availableChatRooms);
+      };
     </script>
   </body>
 </html>

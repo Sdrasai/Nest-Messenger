@@ -38,4 +38,28 @@ export class MessagesService {
       throw error;
     }
   }
+
+  async getRecentConversationsForUser(username: string): Promise<any[]> {
+    // Logic to fetch recent conversations for the user
+    try {
+      const recentConversations = await this.messageModel.aggregate([
+        {
+          $match: {
+            user: username, // Assuming 'user' field in your message schema refers to the username
+          },
+        },
+        {
+          $group: {
+            _id: "$chatRoom",
+            lastMessage: { $last: "$message" }, // Get the last message for each chat room
+            count: { $sum: 1 }, // Count the total number of messages in each chat room
+          },
+        },
+      ]);
+      return recentConversations;
+    } catch (error) {
+      console.error("Error fetching recent conversations:", error);
+      throw error;
+    }
+  }
 }
