@@ -54,7 +54,10 @@ import { ChatRoomsModule } from "./chat-rooms/chat-rooms.module";
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
-    consumer.apply(SocketAuthGuardMiddleware).forRoutes("api/v1/chat");
+    consumer
+      .apply(SocketAuthGuardMiddleware)
+      .exclude("api/v1/login")
+      .forRoutes("*");
   }
 }
 // export class AppModule {}
