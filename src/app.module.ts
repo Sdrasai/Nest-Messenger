@@ -13,14 +13,14 @@ import { ServeStaticModule } from "@nestjs/serve-static";
 import { join } from "path";
 // import { Message, messageSchema } from "./messages/entities/message.entity";
 // import { Connection } from "mongoose";
-import { ChatRoomsModule } from './chat-rooms/chat-rooms.module';
+import { ChatRoomsModule } from "./chat-rooms/chat-rooms.module";
 // import * as AutoIncrementFactory from "mongoose-sequence";
 
 @Module({
   imports: [
     UsersModule,
     AuthModule,
-    MongooseModule.forRoot("mongodb://mongodb:27017/Messenger"),
+    MongooseModule.forRoot("mongodb://localhost:27017/Messenger"),
     // MongooseModule.forFeatureAsync([
     //   {
     //     name: Message.name,
@@ -54,7 +54,10 @@ import { ChatRoomsModule } from './chat-rooms/chat-rooms.module';
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
-    consumer.apply(SocketAuthGuardMiddleware).forRoutes("api/v1/chat");
+    consumer
+      .apply(SocketAuthGuardMiddleware)
+      .exclude("api/v1/login")
+      .forRoutes("*");
   }
 }
 // export class AppModule {}

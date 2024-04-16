@@ -35,13 +35,13 @@ export class messageController {
   }
 
   @Post("register")
-  registerInSocket(
+  async registerInSocket(
     @Res() res: Response,
     @Req() req: Request,
     @Body() createUserDto: CreateUserDto
   ) {
     try {
-      this.usersService.create(createUserDto);
+      await this.usersService.create(createUserDto);
 
       // Send success message and redirect to chat page
       res.send(`
