@@ -5,32 +5,142 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Main Page</title>
   </head>
+
+  <style>
+    body {
+      background: url("https://img.freepik.com/free-vector/abstract-black-texture-background-hexagon_206725-413.jpg?t=st=1713531740~exp=1713535340~hmac=a8d82c63e8ed941ad33e267948979543567eca8e138cb3e07ef691b0cf6033b5&w=1380");
+      background-repeat: no-repeat;
+      background-size: cover;
+      height: 100vh;
+      width: 100%;
+      margin: 0;
+      padding: 0;
+      color: white;
+    }
+    .chatrooms {
+      display: flex;
+      width: 100%;
+      gap: 100px;
+      justify-content: center;
+      align-items: center;
+      margin-top: 50px;
+    }
+
+    .chatrooms a {
+      padding: 15px 45px;
+      background-color: darkblue;
+      color: whitesmoke;
+      font-weight: bold;
+      text-decoration: none;
+      border-radius: 10px;
+      cursor: pointer;
+    }
+
+    .chatrooms a:hover {
+      background-color: rgb(1, 1, 128);
+    }
+
+    .section {
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      gap: 40px;
+      margin-top: 50px;
+    }
+    h1 {
+      margin: 0;
+      padding: 0;
+    }
+
+    input {
+      padding: 12px;
+      border: none;
+      box-shadow: 0 0 3px 0 rgb(236, 236, 236);
+      border-radius: 8px;
+      width: 250px;
+    }
+
+    button {
+      background-color: darkblue;
+      padding: 15px 45px;
+      border-radius: 8px;
+      color: white;
+      font-weight: bold;
+      border: none;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: rgb(1, 1, 218);
+    }
+
+    .footer {
+      position: fixed;
+      bottom: 25px;
+      font-weight: bold;
+      color: rgb(184, 184, 184);
+      left: 40%;
+    }
+  </style>
+
   <body>
-    <h1>Welcome to the Chat App</h1>
-    <input
-      type="text"
-      id="usernames"
-      placeholder="Enter usernames (comma-separated)"
-    />
-    <button onclick="createChatRoom()">Create Chat Room</button>
-    <section id="chatrooms"></section>
+    <div class="section">
+      <h1>Welcome to the Chat App</h1>
+      <input
+        type="text"
+        id="usernames"
+        placeholder="Enter usernames (comma-separated)"
+      />
+      <button onclick="createChatRoom()">Create Chat Room</button>
+    </div>
+    <section id="chatrooms">
+      <div class="chatrooms">
+        <a href="#">PV</a>
+        <a href="#">Public</a>
+        <a href="#">Group</a>
+      </div>
+    </section>
+
+    <footer class="footer">تمامی حقوق این سایت محفوظ میباشد</footer>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.3.1/socket.io.js"></script>
     <script>
-      const socket = io("ws://localhost:3000");
+      const socket = io("ws://localhost:3000", {
+        auth: {
+          serverOffset: 0,
+        },
+      });
 
       function createChatRoom() {
         const usernames = document.getElementById("usernames").value.split(",");
-        console.log(usernames);
+        // console.log(usernames);
         socket.emit("createChatRoom", usernames, (roomId) => {
           window.location.href = `/api/v1/chat/${roomId}`; // Redirect to the chat room page
         });
       }
+
+      socket.on("userChatRooms", (chatRooms) => {
+        // console.log(chatRooms);
+      });
+      socket.on("usersNickname", (contacts) => {
+        // console.log(contacts);
+      });
+
       //list - form - refresh the htlm send the br tag into this html page
       socket.on("connect", () => {
         console.log("Connected to WebSocket server");
       });
 
       socket.on("chatRoomCreated", (roomId) => {
+        console.log(
+          "-------------------------------",
+          socket.auth.serverOffset
+        );
+        if (!socket.recovered) {
+          console.log("+++++++++++++++++");
+        }
+        socket.emit("recoveryMsg", "data");
         window.location.href = `/api/v1/chat/${roomId}`; // Redirect to the chat room page
       });
     </script>

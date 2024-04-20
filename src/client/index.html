@@ -110,6 +110,13 @@
         window.scrollTo(0, document.body.scrollHeight);
       });
 
+      // socket.on("userChatRooms", (chatRooms) => {
+      //   console.log(chatRooms);
+      // });
+      // socket.on("usersNickname", (contacts) => {
+      //   console.log(contacts);
+      // });
+
       socket.on("disconnect", () => {
         console.log("Disconnected from WebSocket server");
       });

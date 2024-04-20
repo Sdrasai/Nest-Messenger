@@ -91,7 +91,37 @@ export class MessagesGateway {
       console.log(client.rooms); // the Set contains at least the socket ID
     });
     client.join(roomId);
-    console.log(`++++++++++++++++++++++${nickName}`, client.rooms);
+    // console.log(`++++++++++++++++++++++${nickName}`, client.rooms);
+
+    setInterval(async () => {
+      const userId = await this.userService.findByUsername(nickName);
+      const users = await this.userService.findAll();
+      const chatRooms = await this.chatRoomService.getChatRooms(userId._id);
+      let userChatRooms = [];
+      let usersNickname = [];
+      users.forEach((user) => {
+        usersNickname.push({
+          name: user.username,
+        });
+      });
+
+      chatRooms.forEach((room) => {
+        if (room.user.length === 2) {
+          userChatRooms.push({
+            name: "Pv",
+            chatRooms: room.chatRoomId,
+          });
+        } else {
+          userChatRooms.push({
+            name: "Group",
+            chatRooms: room.chatRoomId,
+          });
+        }
+      });
+
+      client.emit("userChatRooms", userChatRooms);
+      client.emit("usersNickname", usersNickname);
+    }, 5000);
   }
 
   handleDisconnect(client: any) {
@@ -120,6 +150,16 @@ export class MessagesGateway {
     const user = await this.userService.findByUsername(username);
     const chatRoom = await this.chatRoomService.findByRoomId(roomId);
 
+    // if (!client.handshake.auth.serverOffset && !client.recovered) {
+    //   const prevMessages = await this.messagesService.recoveryMessages(
+    //     chatRoom._id
+    //   );
+    //   prevMessages.forEach((data) => {
+    //     this.server.to(roomId).emit("chat message", data.message);
+    //   });
+    //   client.handshake.auth.serverOffset = 1;
+    // }
+
     if (roomId == "public") {
       await this.messagesService.createMessageService(user, message, "Public");
       this.server.to("public").emit("chat message", msg);
@@ -128,6 +168,37 @@ export class MessagesGateway {
       this.server.to(roomId).emit("chat message", msg);
     }
   }
+
+  
+  @SubscribeMessage("recoveryMsg")
+  async prevMsg(
+    @ConnectedSocket() client: Socket
+  ) {
+
+    console.log("firstttttttttttt");
+    
+
+    let roomId = client.handshake.headers.referer.split("/")[6];
+    const chatRoom = await this.chatRoomService.findByRoomId(roomId);
+
+    if (!client.handshake.auth.serverOffset && !client.recovered) {
+    console.log("Seconddddddddddddd");
+
+      const prevMessages = await this.messagesService.recoveryMessages(
+        chatRoom._id
+      );
+      prevMessages.forEach((data) => {
+        this.server.to(roomId).emit("chat message", data.message);
+      });
+      client.handshake.auth.serverOffset = 1;
+    }
+
+  }
+
+
+
+
+
 
   @SubscribeMessage("typing")
   istyping(@MessageBody() msg: any, @ConnectedSocket() client: Socket) {

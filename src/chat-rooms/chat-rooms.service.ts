@@ -18,7 +18,7 @@ export class ChatRoomsService {
   }
 
   async getChatRooms(userId: string): Promise<ChatRooms[]> {
-    return this.chatRoomModel.find({ user: userId }).populate("user");
+    return await this.chatRoomModel.find({ user: userId }).populate("user");
   }
 
   async createChatRoom(
