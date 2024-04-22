@@ -13,18 +13,23 @@ export class MessagesService {
   ) {}
 
   async recoveryMessages(chatRoomId: string) {
-    return await this.messageModel.find({ chatRoom: chatRoomId });
+    const messages = await this.messageModel
+      .find({ chatRoom: chatRoomId })
+      .populate("user");
+    return messages;
   }
 
   async createMessageService(
     user: any,
     message: string,
-    chatRoom: any
+    chatRoom: any,
+    time: string
   ): Promise<Message> {
     return await this.messageModel.create({
       user,
       message,
       chatRoom,
+      time,
     });
   }
   findAllService() {

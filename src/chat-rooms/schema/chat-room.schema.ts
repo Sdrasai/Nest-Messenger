@@ -14,5 +14,5 @@ export class ChatRooms {
   //   @Prop({ type: [Types.ObjectId], ref: "Message" })
   //   message: Array<Message>;
 }
-
+  
 export const chatRoomsSchema = SchemaFactory.createForClass(ChatRooms);

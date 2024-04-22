@@ -15,11 +15,8 @@ export class Message {
   @Prop({ type: Types.ObjectId, ref: "ChatRooms" })
   chatRoom: ChatRooms;
 
-  // @Prop()
-  // client_offset: number;
-
-  // @Prop()
-  // id: number;
+  @Prop()
+  time: string;
 }
 
 export const messageSchema = SchemaFactory.createForClass(Message);

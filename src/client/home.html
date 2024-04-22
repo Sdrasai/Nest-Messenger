@@ -115,16 +115,17 @@
       function createChatRoom() {
         const usernames = document.getElementById("usernames").value.split(",");
         // console.log(usernames);
-        socket.emit("createChatRoom", usernames, (roomId) => {
-          window.location.href = `/api/v1/chat/${roomId}`; // Redirect to the chat room page
-        });
+        // socket.emit("createChatRoom", usernames, (roomId) => {
+        //   window.location.href = `/api/v1/chat/${roomId}`; // Redirect to the chat room page
+        // });
+        socket.emit("createChatRoom", usernames);
       }
 
       socket.on("userChatRooms", (chatRooms) => {
-        // console.log(chatRooms);
+        console.log(chatRooms);
       });
       socket.on("usersNickname", (contacts) => {
-        // console.log(contacts);
+        console.log(contacts);
       });
 
       //list - form - refresh the htlm send the br tag into this html page
@@ -133,14 +134,14 @@
       });
 
       socket.on("chatRoomCreated", (roomId) => {
-        console.log(
-          "-------------------------------",
-          socket.auth.serverOffset
-        );
-        if (!socket.recovered) {
-          console.log("+++++++++++++++++");
-        }
-        socket.emit("recoveryMsg", "data");
+        // console.log(
+        //   "-------------------------------",
+        //   socket.auth.serverOffset
+        // );
+        // if (!socket.recovered) {
+        //   console.log("+++++++++++++++++");
+        // }
+        socket.emit("recoveryMsg", roomId);
         window.location.href = `/api/v1/chat/${roomId}`; // Redirect to the chat room page
       });
     </script>

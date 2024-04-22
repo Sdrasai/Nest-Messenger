@@ -91,14 +91,18 @@
         pElement.style.display = "none";
       });
 
-      socket.on("chat message", (msg) => {
+      socket.on("chat message", (msg, timestamp) => {
         const item = document.createElement("li");
         const messageParagraph = document.createElement("p");
         const timestampParagraph = document.createElement("p");
 
         // Set message text and timestamp
         messageParagraph.textContent = msg;
-        timestampParagraph.textContent = formatTimestamp();
+        if (timestamp) {
+          timestampParagraph.textContent = timestamp;
+        } else {
+          timestampParagraph.textContent = formatTimestamp();
+        }
 
         // Append message and timestamp to list item
         item.appendChild(messageParagraph);
