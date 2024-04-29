@@ -34,6 +34,7 @@
       });
 
       socket.on("connect", () => {
+        socket.emit("restoreMessages");
         console.log("Connected to WebSocket server");
       });
 
@@ -112,6 +113,30 @@
         ul.appendChild(item);
 
         window.scrollTo(0, document.body.scrollHeight);
+        socket.auth.serverOffset++;
+      });
+
+      socket.on("restoreMessages", (msg, timestamp, count) => {
+        if (socket.auth.serverOffset < count) {
+          const item = document.createElement("li");
+          const messageParagraph = document.createElement("p");
+          const timestampParagraph = document.createElement("p");
+
+          messageParagraph.textContent = msg;
+          if (timestamp) {
+            timestampParagraph.textContent = timestamp;
+          } else {
+            timestampParagraph.textContent = formatTimestamp();
+          }
+
+          item.appendChild(messageParagraph);
+          item.appendChild(timestampParagraph);
+
+          ul.appendChild(item);
+
+          window.scrollTo(0, document.body.scrollHeight);
+          socket.auth.serverOffset++;
+        }
       });
 
       // socket.on("userChatRooms", (chatRooms) => {
